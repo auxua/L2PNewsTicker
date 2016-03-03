@@ -233,9 +233,12 @@ namespace L2PAPIClient.api
         public async static Task<bool> CheckValidTokenAsync()
         {
             string callURL = Config.L2PEndPoint + "/Ping?accessToken=" + Config.getAccessToken() + "&p=ping";
-            var answer = await RestCallAsync<L2PPingData>("", callURL, false);
-            if ((answer == null) || (answer.status == false))
-                return false;
+            try {
+                var answer = await RestCallAsync<L2PPingData>("", callURL, false);
+                if ((answer == null) || (answer.status == false))
+                    return false;
+            }
+            catch { return false; } // Handle Header 401
             return true;
         }
 

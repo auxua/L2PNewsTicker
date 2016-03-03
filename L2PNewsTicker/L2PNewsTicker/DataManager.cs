@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace L2PNewsTicker
 {
@@ -44,6 +45,27 @@ namespace L2PNewsTicker
         /// Called each time a DataCall is finished
         /// </summary>
         void onProgress();
+    }
+
+    public class CourseCellAdapter
+    {
+        public string Text { get; set; }
+        public string Detail { get; set; }
+        public string cid { get; set; }
+        public Xamarin.Forms.Color MainColor
+        {
+            get
+            {
+                return TestPage.FontColor;
+            }
+        }
+        public Xamarin.Forms.Color DetailColor
+        {
+            get
+            {
+                return TestPage.FontColor;
+            }
+        }
     }
 
     public class DataManager
@@ -106,8 +128,14 @@ namespace L2PNewsTicker
         /// <summary>
         /// Gets the WhatsNew-Content for the given CID
         /// </summary>
-        private static async void getContentForCID(string cid)
+        private static async void getContentForCID(string cid, CancellationToken ct)
         {
+            // Simple idea: Cancelled? Report for data source size, then return
+            if (ct != null && ct.IsCancellationRequested)
+            {
+                Logger.Log("Data for " + cid + " aborted");
+                return;
+            }
             try
             {
                 // Get data from L2P
@@ -115,6 +143,12 @@ namespace L2PNewsTicker
 #if DEBUG
                 Logger.Log("Got Data for: " + cid);
 #endif
+                // If cancelled while getting data, return to avoid data inconsistencies
+                if (ct != null && ct.IsCancellationRequested)
+                {
+                    Logger.Log("Data for " + cid+" aborted");
+                    return;
+                }
                 // Add to Data Management
                 if (result.status)
                     addStuff(result,cid);
@@ -141,6 +175,45 @@ namespace L2PNewsTicker
         }
 
         /// <summary>
+        /// This flag is used for signalling abortion between getting courses and course updates
+        /// </summary>
+        private static bool abortFlag = false;
+
+        /// <summary>
+        /// making the Tokens accessible outside the method allows aborting the work
+        /// </summary>
+        //private static Task[] threads;
+        private static CancellationTokenSource[] cancelTokens;
+
+        public static void CancelUpdate()
+        {
+            //set flag for in-between calls case
+            abortFlag = true;
+            if (cancelTokens != null)
+            {
+                // Try/catch in here for the case of bad access during enumeration
+                try
+                {
+                    foreach (var item in cancelTokens)
+                    {
+                        try
+                        {
+                            item.Cancel();
+                        }
+                        catch { }
+                        finally
+                        {
+                            // If Object, Dispose it
+                            if (item != null)
+                                item.Dispose();
+                        }
+                    }
+                }
+                catch { }
+            }
+        }
+
+        /// <summary>
         /// Start updating the current Data of whatsNew
         /// </summary>
         /// <param name="callback">An (optional) Callback after the Data has been fetched completely</param>
@@ -158,7 +231,8 @@ namespace L2PNewsTicker
                 IEnumerable<string> cids = courses.dataset.Select((x) => x.uniqueid);
                 foreach (var item in courses.dataset)
                 {
-                    CIDMappings.Add(item.uniqueid, item.courseTitle);
+                    CIDMappings[item.uniqueid] = item.courseTitle;
+                    //CIDMappings.Add(item.uniqueid, item.courseTitle);
                 }
 
 #if DEBUG
@@ -168,6 +242,7 @@ namespace L2PNewsTicker
                 ProgressCallback.beforeGettingCourses(cids.Count());
                 // Use Tasks for Multithreading
                 var threads = new Task[cids.Count()];
+                cancelTokens = new CancellationTokenSource[cids.Count()];
                 int i = 0;
                 // no getter at the moment, so no need for locking
                 cidCount = cids.Count();
@@ -175,8 +250,12 @@ namespace L2PNewsTicker
                 foreach (string cid in cids)
                 //Parallel.ForEach(cids, (cid) =>
                 {
-
-                    threads[i++] = Task.Factory.StartNew(() => getContentForCID(cid));
+                    var TokenSource = new CancellationTokenSource();
+                    // Save Token to enable cancallation later on
+                    cancelTokens[i] = TokenSource;
+                    var token = TokenSource.Token;
+                    threads[i] = Task.Factory.StartNew(() => getContentForCID(cid, token), token);
+                    i++;
                 }
                 
             }
@@ -225,6 +304,38 @@ namespace L2PNewsTicker
             if (data.data.mediaLibraries != null && data.data.mediaLibraries.Count > 0) result += "  Media: " + data.data.mediaLibraries.Count + Environment.NewLine;
             if (data.data.sharedDocuments != null && data.data.sharedDocuments.Count > 0) result += "  SharedDocs: " + data.data.sharedDocuments.Count + Environment.NewLine;
             return result;
+        }
+
+        public static IEnumerable<CourseCellAdapter> GetCoursesCellAdaption()
+        {
+            List<CourseCellAdapter> cellData = new List<CourseCellAdapter>();
+
+            // Traverse elements and add them
+            foreach (var data in newStuff)
+            {
+                CourseCellAdapter cell = new CourseCellAdapter();
+                // Use humn-readable name
+                cell.Text = CIDMappings[data.cid];
+                // For detail traverse whole dataset
+                string result = "";
+                if (data.data.wikis != null && data.data.wikis.Count > 0) result += "  Wikis: " + data.data.wikis.Count + Environment.NewLine;
+                if (data.data.announcements != null && data.data.announcements.Count > 0) result += "  Announcements: " + data.data.announcements.Count + Environment.NewLine;
+                if (data.data.assignements != null && data.data.assignements.Count > 0) result += "  Assignments: " + data.data.assignements.Count + Environment.NewLine;
+                if (data.data.discussionItems != null && data.data.discussionItems.Count > 0) result += "  Discussions: " + data.data.discussionItems.Count + Environment.NewLine;
+                if (data.data.emails != null && data.data.emails.Count > 0) result += "  Emails: " + data.data.emails.Count + Environment.NewLine;
+                if (data.data.hyperlinks != null && data.data.hyperlinks.Count > 0) result += "  Hyperlinks: " + data.data.hyperlinks.Count + Environment.NewLine;
+                if (data.data.learningMaterials != null && data.data.learningMaterials.Count > 0) result += "  LearningMaterials: " + data.data.learningMaterials.Count + Environment.NewLine;
+                if (data.data.literature != null && data.data.literature.Count > 0) result += "  Literature: " + data.data.literature.Count + Environment.NewLine;
+                if (data.data.mediaLibraries != null && data.data.mediaLibraries.Count > 0) result += "  Media: " + data.data.mediaLibraries.Count + Environment.NewLine;
+                if (data.data.sharedDocuments != null && data.data.sharedDocuments.Count > 0) result += "  SharedDocs: " + data.data.sharedDocuments.Count + Environment.NewLine;
+                // If empty, just inform user
+                if (result == "")
+                    result = "Nothing new";
+                cell.Detail = result;
+                cell.cid = data.cid;
+                cellData.Add(cell);
+            }
+            return cellData;
         }
     }
 }

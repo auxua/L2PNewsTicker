@@ -87,6 +87,15 @@ namespace L2PAPIClient
 
         }
 
+        /// <summary>
+        /// An Exception for Indicating problem with the authorization state
+        /// </summary>
+        public class NotAuthorizedException : Exception
+        {
+            public NotAuthorizedException(string text) : base(text) { }
+            public NotAuthorizedException() : base() { }
+
+        }
 
         private static Mutex CheckAccessTokenMutex = new Mutex();
         /// <summary>
@@ -107,8 +116,18 @@ namespace L2PAPIClient
             if (!answer)
             {
                 // Try to refresh the token
-                await GenerateAccessTokenFromRefreshTokenAsync();
+                bool success = await GenerateAccessTokenFromRefreshTokenAsync();
                 //call = "{ \"client_id:\" \"" + Config.ClientID + "\" \"access_token\": \"" + Config.getAccessToken() + "\" }";
+
+                if (!success)
+                {
+                    // refreshToken and AccessToken are not working!
+                    Config.setAccessToken("");
+                    Config.setRefreshToken("");
+                    setState(AuthenticationState.NONE);
+                    // Inform caller!
+                    throw new NotAuthorizedException("App not authorized");
+                }
 
                 answer = await api.Calls.CheckValidTokenAsync();
                 if (!answer)

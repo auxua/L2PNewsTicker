@@ -13,7 +13,6 @@ using System.Diagnostics;
 namespace L2PNewsTicker
 {
     
-
     public class TestPage : ContentPage
 	{
         public class TestPageLoggingAdapter : ILoggingAdapter
@@ -38,11 +37,15 @@ namespace L2PNewsTicker
 
         private Label label;
 		private Button AuthorizeButton;
+        private Button RefreshButton;
         private Button StartUpdateButton;
         private ListView list;
         private ProgressBar bar;
 
         private bool isAuthorized = false;
+
+        public static Color Background = Color.FromHex("407FB7");
+        public static Color FontColor = Color.FromHex("ECEDED");
 
         public bool IsAuthorized
         {
@@ -55,12 +58,14 @@ namespace L2PNewsTicker
                 this.isAuthorized = value;
                 Device.BeginInvokeOnMainThread(() =>
                 {
-                    AuthorizeButton.IsVisible = !value;
+                    //AuthorizeButton.IsVisible = !value;
+                    AuthorizeButton.IsEnabled = !value;
+                    RefreshButton.IsEnabled = value;
                     //StartUpdateButton.IsVisible = value;
                 });
                 if (!value) return;
                 // start work directly
-                this.Button2_Clicked(this, null);
+                this.GetCourseUpdates(this, null);
             }
         }
 
@@ -79,7 +84,15 @@ namespace L2PNewsTicker
                 {
                     //AuthorizeButton.IsVisible = !value;
                     //StartUpdateButton.IsVisible = value;
-                    bar.IsVisible = value;
+                    //bar.IsVisible = value;
+                    if (!value)
+                    {
+                        RefreshButton.Text = "Refresh";
+                    }
+                    else
+                    {
+                        RefreshButton.Text = "Cancel";
+                    }
                 });
                 //if (!value) return;
                 // start work directly
@@ -95,18 +108,49 @@ namespace L2PNewsTicker
 
             label = new Label();
 			label.Text = "Test";
+            label.TextColor = FontColor;
 
 			AuthorizeButton = new Button();
 			AuthorizeButton.Text = "Start";
 			AuthorizeButton.Clicked += Button_Clicked;
+            AuthorizeButton.TextColor = FontColor;
+            AuthorizeButton.HorizontalOptions = LayoutOptions.FillAndExpand;
 
-            StartUpdateButton = new Button();
+            /*StartUpdateButton = new Button();
             StartUpdateButton.Text = "Start query";
-            StartUpdateButton.Clicked += Button2_Clicked;
+            StartUpdateButton.Clicked += GetCourseUpdates;*/
+
+            RefreshButton = new Button();
+            RefreshButton.Text = "Refresh";
+            RefreshButton.TextColor = FontColor;
+            RefreshButton.Clicked += GetCourseUpdates;
+            RefreshButton.IsEnabled = false;
+            RefreshButton.HorizontalOptions = LayoutOptions.FillAndExpand;
+
+            StackLayout buttons = new StackLayout
+            {
+                Children =
+                {
+                    AuthorizeButton,
+                    RefreshButton
+                },
+                Orientation = StackOrientation.Horizontal,
+                HorizontalOptions = LayoutOptions.Fill,
+                BackgroundColor = Background
+            };
 
             list = new ListView();
+            list.ItemTapped += TappedCourse;
+
+            var customCell = new DataTemplate(typeof(TextCell));
+            customCell.SetBinding(TextCell.TextProperty, "Text");
+            customCell.SetBinding(TextCell.DetailProperty, "Detail");
+            customCell.SetBinding(TextCell.TextColorProperty, "MainColor");
+            customCell.SetBinding(TextCell.DetailColorProperty, "DetailColor");
+            list.ItemTemplate = customCell;
 
             bar = new ProgressBar();
+            bar.BackgroundColor = FontColor;
 
             TestPageLoggingAdapter Logger = new TestPageLoggingAdapter(label);
             DataManager.setLogger(Logger);
@@ -118,22 +162,34 @@ namespace L2PNewsTicker
             {
                 Children =
                 {
-                    AuthorizeButton,
+                    //AuthorizeButton,
                     //StartUpdateButton,
+                    buttons,
                     bar,
+#if DEBUG
                     label,
+#endif
                     list
-                }
+                },
+                BackgroundColor = Background,
             };
             stack.Padding = new Thickness(10, 10);
             stack.HorizontalOptions = LayoutOptions.Fill;
             scroll.Content = stack;
 
-            Content = scroll;
+            //Content = scroll;
+            Content = stack;
 
             // Toggle Visibility for Authorization Status
             IsAuthorized = auth;
 		}
+
+        private void TappedCourse(object sender, ItemTappedEventArgs e)
+        {
+            //throw new NotImplementedException();
+            CourseCellAdapter source = (CourseCellAdapter)e.Item;
+            if (source == null) return;
+        }
 
         int cidCount;
 
@@ -158,8 +214,10 @@ namespace L2PNewsTicker
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     outerPage.IsBusy = false;
+                    ((TestPage)outerPage).IsGettingData = false;
                     //outerPage.DisplayAlert("Finsihed", "Finished work", "OK");
-                    list.ItemsSource = DataManager.GetUpdateStringsAsList();
+                    //list.ItemsSource = DataManager.GetUpdateStringsAsList();
+                    list.ItemsSource = DataManager.GetCoursesCellAdaption();
                 });
                 //DataManager.ShowUpdatesViaLog();
                 
@@ -186,12 +244,36 @@ namespace L2PNewsTicker
             }
         }
 
-        private async void Button2_Clicked(object sender, EventArgs e)
+        private async void GetCourseUpdates(object sender, EventArgs e)
         {
+            if (this.IsGettingData)
+            {
+                // Already working, so abort is requested by user
+                DataManager.CancelUpdate();
+                Device.BeginInvokeOnMainThread(() =>
+                    {
+                        DisplayAlert("Cancel", "Updates is being cancelled (may take a bit to clean up network communication properly)", "OK");
+                        // Just avoid the bar to hang somewhere in between
+                        bar.ProgressTo(0, 250, Easing.Linear);
+                    });
+                IsBusy = false;
+                IsGettingData = false;
+                return;
+            }
+
+            this.IsGettingData = true;
             IsBusy = true;
-            
-            // Create Callback and start Work
-            await DataManager.startUpdate(new SimpleFinishedCallBack(this, list, bar));
+
+            try
+            {
+                // Create Callback and start Work
+                await DataManager.startUpdate(new SimpleFinishedCallBack(this, list, bar));
+            }
+            catch (AuthenticationManager.NotAuthorizedException)
+            {
+                // handle Authorization Issue
+                return;
+            }
         }
         
         async void Button_Clicked (object sender, EventArgs e)
@@ -229,7 +311,7 @@ namespace L2PNewsTicker
                 // just try to check authorize sometimes in case of slow device
                 for (int i = 0; i < 50; i++)
                 {
-                    Thread.Sleep(3000);
+                    Thread.Sleep(5000);
                     bool auth = await L2PAPIClient.AuthenticationManager.CheckAuthenticationProgressAsync();
                     if (auth)
                     {
