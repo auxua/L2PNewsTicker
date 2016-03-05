@@ -131,7 +131,7 @@ namespace L2PAPIClient.api
         {
             // Check Auth.
             await AuthenticationManager.CheckAccessTokenAsync();
-            string callURL = Config.L2PEndPoint + "/whatsNew?accessToken=" + Config.getAccessToken() + "&cid=" + cid + "&pastMinutes=" + pastMinutes;
+            string callURL = Config.L2PEndPoint + "/whatsNewSince?accessToken=" + Config.getAccessToken() + "&cid=" + cid + "&pastMinutes=" + pastMinutes;
             var answer = await RestCallAsync<L2PWhatsNewDataType>("", callURL, false);
             return answer;
         }

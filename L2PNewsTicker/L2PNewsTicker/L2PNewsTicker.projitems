@@ -12,9 +12,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AuthenticationManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Config.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CourseDetailPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CourseInfoCell.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HtmlStripper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RESTCalls.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)TestPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MainPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WhatsNewElementCell.cs" />
   </ItemGroup>
 </Project>

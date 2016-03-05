@@ -13,7 +13,7 @@ using System.Diagnostics;
 namespace L2PNewsTicker
 {
     
-    public class TestPage : ContentPage
+    public class MainPage : ContentPage
 	{
         public class TestPageLoggingAdapter : ILoggingAdapter
         {
@@ -26,7 +26,8 @@ namespace L2PNewsTicker
 
             public void Log(string text)
             {
-                Device.BeginInvokeOnMainThread(() => label.Text += text + Environment.NewLine);
+                //Device.BeginInvokeOnMainThread(() => label.Text += text + Environment.NewLine);
+                Device.BeginInvokeOnMainThread(() => label.Text = text);
             }
 
             public void ImportantLog(string text)
@@ -46,6 +47,7 @@ namespace L2PNewsTicker
 
         public static Color Background = Color.FromHex("407FB7");
         public static Color FontColor = Color.FromHex("ECEDED");
+        public static Color SecondaryColor = Color.FromHex("000000");
 
         public bool IsAuthorized
         {
@@ -101,14 +103,15 @@ namespace L2PNewsTicker
         }
 
 
-        public TestPage ()
+        public MainPage ()
 		{
             // Is User already authorized?
             bool auth = (L2PAPIClient.AuthenticationManager.getState() == AuthenticationManager.AuthenticationState.ACTIVE);
 
             label = new Label();
-			label.Text = "Test";
+			label.Text = "Ready to Start";
             label.TextColor = FontColor;
+            label.HorizontalOptions = LayoutOptions.CenterAndExpand;
 
 			AuthorizeButton = new Button();
 			AuthorizeButton.Text = "Start";
@@ -127,6 +130,13 @@ namespace L2PNewsTicker
             RefreshButton.IsEnabled = false;
             RefreshButton.HorizontalOptions = LayoutOptions.FillAndExpand;
 
+            var line = new BoxView();
+            line.HeightRequest = 5;
+            line.Color = FontColor;
+            //line.HorizontalOptions = LayoutOptions.CenterAndExpand;
+            //line.TranslationX = -10;
+            line.WidthRequest = 1080; // just use full width of screen...
+
             StackLayout buttons = new StackLayout
             {
                 Children =
@@ -141,12 +151,14 @@ namespace L2PNewsTicker
 
             list = new ListView();
             list.ItemTapped += TappedCourse;
+            list.HasUnevenRows = true;
 
-            var customCell = new DataTemplate(typeof(TextCell));
+            /*var customCell = new DataTemplate(typeof(TextCell));
             customCell.SetBinding(TextCell.TextProperty, "Text");
             customCell.SetBinding(TextCell.DetailProperty, "Detail");
             customCell.SetBinding(TextCell.TextColorProperty, "MainColor");
-            customCell.SetBinding(TextCell.DetailColorProperty, "DetailColor");
+            customCell.SetBinding(TextCell.DetailColorProperty, "DetailColor");*/
+            var customCell = new DataTemplate(typeof(CourseInfoCell));
             list.ItemTemplate = customCell;
 
             bar = new ProgressBar();
@@ -168,6 +180,7 @@ namespace L2PNewsTicker
                     bar,
 #if DEBUG
                     label,
+                    line,
 #endif
                     list
                 },
@@ -189,6 +202,19 @@ namespace L2PNewsTicker
             //throw new NotImplementedException();
             CourseCellAdapter source = (CourseCellAdapter)e.Item;
             if (source == null) return;
+
+            IsBusy = true;
+
+            //var data = DataManager.GetCourseDataElements(source.cid);
+            var data = DataManager.GetCourseDataElementsFlat(source.cid);
+            CourseDetailPage page = new CourseDetailPage(data);
+
+            IsBusy = false;
+            if (data.Count>0)
+                Device.BeginInvokeOnMainThread(() => Navigation.PushAsync(page));
+            else
+                Device.BeginInvokeOnMainThread(() => DisplayAlert("No Data","No Data for this item.","OK"));
+
         }
 
         int cidCount;
@@ -214,10 +240,11 @@ namespace L2PNewsTicker
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     outerPage.IsBusy = false;
-                    ((TestPage)outerPage).IsGettingData = false;
+                    ((MainPage)outerPage).IsGettingData = false;
                     //outerPage.DisplayAlert("Finsihed", "Finished work", "OK");
                     //list.ItemsSource = DataManager.GetUpdateStringsAsList();
                     list.ItemsSource = DataManager.GetCoursesCellAdaption();
+                    list.IsEnabled = true;
                 });
                 //DataManager.ShowUpdatesViaLog();
                 
@@ -232,6 +259,8 @@ namespace L2PNewsTicker
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     bar.ProgressTo((++step)*stepSize,250,Easing.Linear);
+                    // prevent user from tapping List to avoid inconsistent Data queries
+                    list.IsEnabled = false;
                 });
             }
 
@@ -290,7 +319,7 @@ namespace L2PNewsTicker
                     throw new Exception();
 #endif
 
-                label.Text = Environment.NewLine + "start";
+                label.Text = "Starting";
 
                 string url;
                 try
@@ -315,7 +344,7 @@ namespace L2PNewsTicker
                     bool auth = await L2PAPIClient.AuthenticationManager.CheckAuthenticationProgressAsync();
                     if (auth)
                     {
-                        label.Text = Environment.NewLine + "done";
+                        label.Text = "done";
                         break;
                     }
                 }

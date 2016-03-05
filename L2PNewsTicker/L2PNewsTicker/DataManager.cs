@@ -56,14 +56,14 @@ namespace L2PNewsTicker
         {
             get
             {
-                return TestPage.FontColor;
+                return MainPage.FontColor;
             }
         }
         public Xamarin.Forms.Color DetailColor
         {
             get
             {
-                return TestPage.FontColor;
+                return MainPage.FontColor;
             }
         }
     }
@@ -139,7 +139,8 @@ namespace L2PNewsTicker
             try
             {
                 // Get data from L2P
-                var result = await L2PAPIClient.api.Calls.L2PwhatsNewAsync(cid);
+                //var result = await L2PAPIClient.api.Calls.L2PwhatsNewAsync(cid);
+                var result = await L2PAPIClient.api.Calls.L2PwhatsNewSinceAsync(cid, 180000);
 #if DEBUG
                 Logger.Log("Got Data for: " + cid);
 #endif
@@ -224,7 +225,7 @@ namespace L2PNewsTicker
                 newStuff.Clear();
                 ProgressCallback = callback;
 #if DEBUG
-                Logger.Log("starting Test");
+                Logger.Log("starting Update");
 #endif
                 // get List of Course Rooms
                 var courses = await L2PAPIClient.api.Calls.L2PviewAllCourseInfoByCurrentSemester();
@@ -335,7 +336,42 @@ namespace L2PNewsTicker
                 cell.cid = data.cid;
                 cellData.Add(cell);
             }
+
+            cellData.Sort((x, y) => String.Compare(x.cid, y.cid));
             return cellData;
+        }
+
+        /// <summary>
+        /// Returns the new elements from local storage for provided CID
+        /// Will return null for missing values
+        /// </summary>
+        public static L2PAPIClient.DataModel.L2PWhatsNewDataType GetCourseDataElements(string cid)
+        {
+            var data = newStuff.Find((x) => x.cid == cid);
+            if (data == null) return null; // Avoid Null Pointer Exceptions
+            return data.data;
+        }
+
+        public static List<object> GetCourseDataElementsFlat(string cid)
+        {
+            // Get original dataset
+            var data = GetCourseDataElements(cid);
+            // Check for Null
+            if (data == null) return null;
+
+            List<object> flatList = new List<object>();
+            if (data.announcements != null) flatList.AddRange(data.announcements);
+            if (data.assignements != null) flatList.AddRange(data.assignements);
+            if (data.discussionItems != null) flatList.AddRange(data.discussionItems);
+            if (data.emails != null) flatList.AddRange(data.emails);
+            if (data.hyperlinks != null) flatList.AddRange(data.hyperlinks);
+            if (data.learningMaterials != null) flatList.AddRange(data.learningMaterials);
+            if (data.literature != null) flatList.AddRange(data.literature);
+            if (data.mediaLibraries != null) flatList.AddRange(data.mediaLibraries);
+            if (data.sharedDocuments != null) flatList.AddRange(data.sharedDocuments);
+            if (data.wikis != null) flatList.AddRange(data.wikis);
+
+            return flatList;
         }
     }
 }

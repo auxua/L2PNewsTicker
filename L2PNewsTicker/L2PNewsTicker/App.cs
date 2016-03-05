@@ -12,7 +12,8 @@ namespace L2PNewsTicker
 		public App ()
 		{
             // The root page of your application
-            MainPage = new TestPage();
+            MainPage = new NavigationPage(new MainPage());
+            //MainPage = new MainPage();
 		}
 
 		protected override void OnStart ()
