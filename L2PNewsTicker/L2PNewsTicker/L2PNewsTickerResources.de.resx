@@ -118,201 +118,99 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Announcement" xml:space="preserve">
-    <value>Announcement</value>
-  </data>
-  <data name="AnnouncementDE" xml:space="preserve">
     <value>Ankündigung</value>
   </data>
   <data name="Announcements" xml:space="preserve">
-    <value>Announcements</value>
-  </data>
-  <data name="AnnouncementsDE" xml:space="preserve">
     <value>Ankündigungen</value>
   </data>
   <data name="Assignment" xml:space="preserve">
-    <value>Assignment</value>
-  </data>
-  <data name="AssignmentDE" xml:space="preserve">
     <value>Übung</value>
   </data>
   <data name="Assignments" xml:space="preserve">
-    <value>Assignments</value>
-  </data>
-  <data name="AssignmentsDE" xml:space="preserve">
     <value>Übungen</value>
   </data>
   <data name="Authorize" xml:space="preserve">
-    <value>Authorize</value>
-  </data>
-  <data name="AuthorizeDE" xml:space="preserve">
     <value>Autorisieren</value>
   </data>
   <data name="Cancel" xml:space="preserve">
-    <value>Cancel</value>
-  </data>
-  <data name="CancelDE" xml:space="preserve">
     <value>Abbrechen</value>
   </data>
   <data name="CancelInfo" xml:space="preserve">
-    <value>Update Progress is being Cancelled. This may take a moment to clean up network</value>
-  </data>
-  <data name="CancelInfoDE" xml:space="preserve">
     <value>Update wird abgebrochen. Dies kann einen Moment dauern um das Netzwerk wieder frei zu geben</value>
   </data>
   <data name="Config" xml:space="preserve">
-    <value>Settings</value>
-  </data>
-  <data name="ConfigDE" xml:space="preserve">
     <value>Einstellungen</value>
   </data>
   <data name="Days" xml:space="preserve">
-    <value>Days</value>
-  </data>
-  <data name="DaysDE" xml:space="preserve">
     <value>Tage</value>
   </data>
   <data name="DiscussionItem" xml:space="preserve">
-    <value>Discussion Item</value>
-  </data>
-  <data name="DiscussionItemDE" xml:space="preserve">
     <value>Diskussionsbeitrag</value>
   </data>
   <data name="Discussions" xml:space="preserve">
-    <value>Discussions</value>
-  </data>
-  <data name="DiscussionsDE" xml:space="preserve">
     <value>Diskussionen</value>
   </data>
   <data name="Done" xml:space="preserve">
-    <value>Done</value>
-  </data>
-  <data name="DoneDE" xml:space="preserve">
     <value>Fertig</value>
   </data>
   <data name="File" xml:space="preserve">
-    <value>File</value>
-  </data>
-  <data name="FileDE" xml:space="preserve">
     <value>Datei</value>
   </data>
   <data name="Folder" xml:space="preserve">
-    <value>Folder</value>
-  </data>
-  <data name="FolderDE" xml:space="preserve">
     <value>Ordner</value>
   </data>
   <data name="Hours" xml:space="preserve">
-    <value>Hours</value>
-  </data>
-  <data name="HoursDE" xml:space="preserve">
     <value>Stunden</value>
   </data>
   <data name="LearningMaterial" xml:space="preserve">
-    <value>Learning Material</value>
-  </data>
-  <data name="LearningMaterialDE" xml:space="preserve">
     <value>Lernmaterial</value>
   </data>
   <data name="LearningMaterials" xml:space="preserve">
-    <value>Learning Materials</value>
-  </data>
-  <data name="LearningMaterialsDE" xml:space="preserve">
     <value>Lernmaterialien</value>
   </data>
   <data name="Literature" xml:space="preserve">
-    <value>Literature</value>
-  </data>
-  <data name="LiteratureDE" xml:space="preserve">
     <value>Literatur</value>
   </data>
   <data name="MediaLibraries" xml:space="preserve">
-    <value>Media Elements</value>
-  </data>
-  <data name="MediaLibrariesDE" xml:space="preserve">
     <value>Medien</value>
   </data>
   <data name="MediaLibrary" xml:space="preserve">
-    <value>Media Library</value>
-  </data>
-  <data name="MediaLibraryDE" xml:space="preserve">
     <value>Medium</value>
   </data>
   <data name="MinTime" xml:space="preserve">
-    <value>Please use a timespan of at least 15 minutes</value>
-  </data>
-  <data name="MinTimeDE" xml:space="preserve">
     <value>Bitte mindestens eine Zeitspanne von 15 Minuten angeben</value>
   </data>
   <data name="Minutes" xml:space="preserve">
-    <value>Minutes</value>
-  </data>
-  <data name="MinutesDE" xml:space="preserve">
     <value>Minuten</value>
   </data>
   <data name="NoData" xml:space="preserve">
-    <value>No Data for this item</value>
-  </data>
-  <data name="NoDataDE" xml:space="preserve">
     <value>Keine Daten vorhanden</value>
   </data>
   <data name="NoInternet" xml:space="preserve">
-    <value>No Internet Connection</value>
-  </data>
-  <data name="NoInternetDE" xml:space="preserve">
     <value>Keine Internetverbindung</value>
   </data>
   <data name="NothingNew" xml:space="preserve">
-    <value>Nothing New</value>
-  </data>
-  <data name="NothingNewDE" xml:space="preserve">
     <value>Nichts Neues</value>
   </data>
   <data name="Ready" xml:space="preserve">
-    <value>Ready</value>
-  </data>
-  <data name="ReadyDE" xml:space="preserve">
     <value>Bereit</value>
   </data>
   <data name="Refresh" xml:space="preserve">
-    <value>Refresh</value>
-  </data>
-  <data name="RefreshDE" xml:space="preserve">
     <value>Aktualisieren</value>
   </data>
-  <data name="ResourceFlowDirection" xml:space="preserve">
-    <value>LeftToRight</value>
-  </data>
-  <data name="ResourceLanguage" xml:space="preserve">
-    <value>en-US</value>
-  </data>
   <data name="SaveChanges" xml:space="preserve">
-    <value>Save Changes</value>
-  </data>
-  <data name="SaveChangesDE" xml:space="preserve">
     <value>Speichern</value>
   </data>
   <data name="SharedDocument" xml:space="preserve">
-    <value>Shared Document</value>
-  </data>
-  <data name="SharedDocumentDE" xml:space="preserve">
     <value>Gemeinsames Dokument</value>
   </data>
   <data name="SharedDocuments" xml:space="preserve">
-    <value>Shared Documents</value>
-  </data>
-  <data name="SharedDocumentsDE" xml:space="preserve">
     <value>Gemeinsame Dokumente</value>
   </data>
   <data name="Starting" xml:space="preserve">
-    <value>Starting...</value>
-  </data>
-  <data name="StartingDE" xml:space="preserve">
     <value>Starte...</value>
   </data>
   <data name="TimeSpanSince" xml:space="preserve">
-    <value>The Timespan to query for news in the course rooms</value>
-  </data>
-  <data name="TimeSpanSinceDE" xml:space="preserve">
     <value>Die Zeitspanne, in der nach Neuigkeiten gesucht werden soll</value>
   </data>
 </root>

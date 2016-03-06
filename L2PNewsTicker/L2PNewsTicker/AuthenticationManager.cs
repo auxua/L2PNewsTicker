@@ -136,6 +136,10 @@ namespace L2PAPIClient
                     Config.setAccessToken("");
                 }
             }
+            else
+            {
+                State = AuthenticationState.ACTIVE;
+            }
             //CheckAccessTokenMutex.ReleaseMutex();
         }
 

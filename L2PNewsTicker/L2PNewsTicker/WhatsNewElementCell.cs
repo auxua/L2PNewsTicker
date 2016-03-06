@@ -62,7 +62,7 @@ namespace L2PNewsTicker
                 TitleLabel.Text = (bc.title == null) ? "" : bc.title;
                 SecondaryLabel.Text = (bc.body == null) ? "" : HtmlStripper.StripTagsRegexCompiled(bc.body);
                 TertiaryLabel.IsVisible = false;
-                TopLabel.Text = "Announcement";
+                TopLabel.Text = Localization.Localize("Announcement");
             }
             else if (BindingContext is L2PAssignmentElement)
             {
@@ -70,7 +70,7 @@ namespace L2PNewsTicker
                 TitleLabel.Text = (bc.title == null) ? "" : bc.title;
                 SecondaryLabel.Text = (bc.description == null) ? "" : bc.description;
                 TertiaryLabel.Text = "Duedate: " + ((bc.dueDate == null) ? "N/A" : bc.dueDate.ToString());
-                TopLabel.Text = "Assignmemt";
+                TopLabel.Text = Localization.Localize("Assignmemt");
             }
             else if (BindingContext is L2PDiscussionItemElement)
             {
@@ -78,7 +78,7 @@ namespace L2PNewsTicker
                 TitleLabel.Text = (bc.subject == null) ? "" : bc.subject;
                 SecondaryLabel.Text = (bc.body == null) ? "" : HtmlStripper.StripTagsRegexCompiled(bc.body);
                 TertiaryLabel.Text = "by: " + ((bc.from == null) ? "" : bc.from);
-                TopLabel.Text = "DiscussionItem";
+                TopLabel.Text = Localization.Localize("DiscussionItem");
             }
             else if (BindingContext is L2PEmailElement)
             {
@@ -103,19 +103,19 @@ namespace L2PNewsTicker
                 SecondaryLabel.Text = (bc.author == null) ? "" : bc.authors;
                 //TertiaryLabel.Text = "note: " + HtmlStripper.StripTagsRegexCompiled(bc.notes);
                 TertiaryLabel.IsVisible = false;
-                TopLabel.Text = "Literature";
+                TopLabel.Text = Localization.Localize("Literature");
             }
             else if (BindingContext is L2PLearningMaterialElement)
             {
                 var bc = (L2PLearningMaterialElement)BindingContext;
                 TitleLabel.Text = (bc.name == null) ? "" : bc.name;
                 if (bc.isDirectory)
-                    SecondaryLabel.Text = "Folder";
+                    SecondaryLabel.Text = Localization.Localize("Folder");
                 else
-                    SecondaryLabel.Text = "File";
+                    SecondaryLabel.Text = Localization.Localize("File");
                 //TertiaryLabel.Text = "note: " + HtmlStripper.StripTagsRegexCompiled(bc.notes);
                 TertiaryLabel.IsVisible = false;
-                TopLabel.Text = "Learning/Shared Material";
+                TopLabel.Text = Localization.Localize("LearningMaterial")+"/"+ Localization.Localize("SharedDocument");
             }
             else if (BindingContext is L2PMediaLibraryElement)
             {
@@ -128,7 +128,7 @@ namespace L2PNewsTicker
                 SecondaryLabel.IsVisible = false;
                 //TertiaryLabel.Text = "note: " + HtmlStripper.StripTagsRegexCompiled(bc.notes);
                 TertiaryLabel.IsVisible = false;
-                TopLabel.Text = "Media Library";
+                TopLabel.Text = Localization.Localize("MediaLibrary");
             }
             else if (BindingContext is L2PWikiElement)
             {
@@ -137,7 +137,7 @@ namespace L2PNewsTicker
                 SecondaryLabel.IsVisible = false;
                 //TertiaryLabel.Text = "note: " + HtmlStripper.StripTagsRegexCompiled(bc.notes);
                 TertiaryLabel.IsVisible = false;
-                TopLabel.Text = "Wiki Page";
+                TopLabel.Text = "Wiki";
             }
             else
             {

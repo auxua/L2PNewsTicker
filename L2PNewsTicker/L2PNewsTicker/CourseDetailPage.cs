@@ -10,6 +10,8 @@ namespace L2PNewsTicker
     {
         public CourseDetailPage(IEnumerable<object> data)
         {
+            Title = "Course Detail";
+
             ListView list = new ListView();
             list.ItemTemplate = new DataTemplate(typeof(WhatsNewElementCell));
             list.HasUnevenRows = true;

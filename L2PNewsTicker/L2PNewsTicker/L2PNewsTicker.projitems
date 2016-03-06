@@ -12,13 +12,24 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AuthenticationManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Config.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ConfigPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CourseDetailPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CourseInfoCell.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HtmlStripper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ILocale.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Localization.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RESTCalls.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MainPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WhatsNewElementCell.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)L2PNewsTickerResources.de.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)L2PNewsTickerResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

@@ -30,5 +30,6 @@ namespace L2PNewsTicker
 		{
 			// Handle when your app resumes
 		}
+        
 	}
 }

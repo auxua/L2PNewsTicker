@@ -9,6 +9,7 @@ using L2PAPIClient;
 
 using Xamarin.Forms;
 using System.Diagnostics;
+using System.Windows.Input;
 
 namespace L2PNewsTicker
 {
@@ -65,6 +66,30 @@ namespace L2PNewsTicker
                     RefreshButton.IsEnabled = value;
                     //StartUpdateButton.IsVisible = value;
                 });
+                //if (!value) return;
+                // start work directly
+                //this.GetCourseUpdates(this, null);
+            }
+        }
+
+        private bool needsUpdate = false;
+
+        public bool NeedsUpdate
+        {
+            get
+            {
+                return this.needsUpdate;
+            }
+            set
+            {
+                this.needsUpdate = value;
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    //AuthorizeButton.IsVisible = !value;
+                    AuthorizeButton.IsEnabled = !value;
+                    RefreshButton.IsEnabled = value;
+                    //StartUpdateButton.IsVisible = value;
+                });
                 if (!value) return;
                 // start work directly
                 this.GetCourseUpdates(this, null);
@@ -89,11 +114,11 @@ namespace L2PNewsTicker
                     //bar.IsVisible = value;
                     if (!value)
                     {
-                        RefreshButton.Text = "Refresh";
+                        RefreshButton.Text = Localization.Localize("Refresh");
                     }
                     else
                     {
-                        RefreshButton.Text = "Cancel";
+                        RefreshButton.Text = Localization.Localize("Cancel");
                     }
                 });
                 //if (!value) return;
@@ -102,19 +127,49 @@ namespace L2PNewsTicker
             }
         }
 
+        private ICommand getConfigPage;
+
+        public ICommand GetConfigPage
+        {
+            get
+            {
+                return getConfigPage;
+            }
+        }
+
+        private async Task StateWrapper()
+        {
+            await L2PAPIClient.AuthenticationManager.CheckAccessTokenAsync();
+            bool auth = (L2PAPIClient.AuthenticationManager.getState() == AuthenticationManager.AuthenticationState.ACTIVE);
+            IsAuthorized = auth;
+            // Try Loading the old values 
+            if (DataManager.Load())
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    list.ItemsSource = DataManager.GetCoursesCellAdaption();
+                    list.IsEnabled = true;
+                });
+            }
+        }
 
         public MainPage ()
 		{
+            Title = "L2P Newsticker";
+
             // Is User already authorized?
-            bool auth = (L2PAPIClient.AuthenticationManager.getState() == AuthenticationManager.AuthenticationState.ACTIVE);
+            /*L2PAPIClient.AuthenticationManager.CheckAccessTokenAsync();
+            bool auth = (L2PAPIClient.AuthenticationManager.getState() == AuthenticationManager.AuthenticationState.ACTIVE);*/
+
+            Task.Factory.StartNew(async () => await StateWrapper());
 
             label = new Label();
-			label.Text = "Ready to Start";
+            label.Text = Localization.Localize("Ready");
             label.TextColor = FontColor;
-            label.HorizontalOptions = LayoutOptions.CenterAndExpand;
+            label.HorizontalOptions = LayoutOptions.Center;
 
 			AuthorizeButton = new Button();
-			AuthorizeButton.Text = "Start";
+			AuthorizeButton.Text = Localization.Localize("Authorize");
 			AuthorizeButton.Clicked += Button_Clicked;
             AuthorizeButton.TextColor = FontColor;
             AuthorizeButton.HorizontalOptions = LayoutOptions.FillAndExpand;
@@ -124,7 +179,7 @@ namespace L2PNewsTicker
             StartUpdateButton.Clicked += GetCourseUpdates;*/
 
             RefreshButton = new Button();
-            RefreshButton.Text = "Refresh";
+            RefreshButton.Text = Localization.Localize("Refresh");
             RefreshButton.TextColor = FontColor;
             RefreshButton.Clicked += GetCourseUpdates;
             RefreshButton.IsEnabled = false;
@@ -193,9 +248,23 @@ namespace L2PNewsTicker
             //Content = scroll;
             Content = stack;
 
+            getConfigPage = new Command(() =>
+            {
+                ConfigPage page = new ConfigPage();
+                Device.BeginInvokeOnMainThread(() => Navigation.PushAsync(page));
+            });
+
+            ToolbarItem tb = new ToolbarItem();
+            tb.Text = Localization.Localize("Config");
+            tb.Command = GetConfigPage;
+            ToolbarItems.Add(tb);
+
             // Toggle Visibility for Authorization Status
-            IsAuthorized = auth;
-		}
+            //IsAuthorized = auth;
+            //isAuthorized = auth;
+        }
+
+        
 
         private void TappedCourse(object sender, ItemTappedEventArgs e)
         {
@@ -213,7 +282,7 @@ namespace L2PNewsTicker
             if (data.Count>0)
                 Device.BeginInvokeOnMainThread(() => Navigation.PushAsync(page));
             else
-                Device.BeginInvokeOnMainThread(() => DisplayAlert("No Data","No Data for this item.","OK"));
+                Device.BeginInvokeOnMainThread(() => DisplayAlert("No Data", Localization.Localize("NoData"),"OK"));
 
         }
 
@@ -247,7 +316,8 @@ namespace L2PNewsTicker
                     list.IsEnabled = true;
                 });
                 //DataManager.ShowUpdatesViaLog();
-                
+                // Save the data to local persistent storage
+                DataManager.Store();
 
             }
 
@@ -281,12 +351,13 @@ namespace L2PNewsTicker
                 DataManager.CancelUpdate();
                 Device.BeginInvokeOnMainThread(() =>
                     {
-                        DisplayAlert("Cancel", "Updates is being cancelled (may take a bit to clean up network communication properly)", "OK");
+                        DisplayAlert("Cancel", Localization.Localize("CancelInfo"), "OK");
                         // Just avoid the bar to hang somewhere in between
                         bar.ProgressTo(0, 250, Easing.Linear);
+                        IsBusy = false;
+                        IsGettingData = false;
                     });
-                IsBusy = false;
-                IsGettingData = false;
+                
                 return;
             }
 
@@ -319,7 +390,8 @@ namespace L2PNewsTicker
                     throw new Exception();
 #endif
 
-                label.Text = "Starting";
+                //label.Text = "Starting";
+                label.Text = Localization.Localize("Starting");
 
                 string url;
                 try
@@ -344,7 +416,7 @@ namespace L2PNewsTicker
                     bool auth = await L2PAPIClient.AuthenticationManager.CheckAuthenticationProgressAsync();
                     if (auth)
                     {
-                        label.Text = "done";
+                        label.Text = Localization.Localize("Done");
                         break;
                     }
                 }
@@ -352,12 +424,13 @@ namespace L2PNewsTicker
             }
             catch (System.Net.WebException ex)
             {
-                label.Text = "Error: No internet";
+                label.Text = Localization.Localize("NoInternet");
             }
             finally
             {
                 // Check Status
                 IsAuthorized = (L2PAPIClient.AuthenticationManager.getState() == AuthenticationManager.AuthenticationState.ACTIVE);
+                if (IsAuthorized) NeedsUpdate = true;
             }
             
         }

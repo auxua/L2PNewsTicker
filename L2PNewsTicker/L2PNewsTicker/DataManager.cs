@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 
+using Xamarin.Forms;
+
 namespace L2PNewsTicker
 {
     /// <summary>
@@ -77,6 +79,37 @@ namespace L2PNewsTicker
         private static IGetDataProgressCallBack ProgressCallback = null;
         private static Dictionary<string, string> CIDMappings = new Dictionary<string, string>();
 
+        public static void Store()
+        {
+            string newStuffJSON = Newtonsoft.Json.JsonConvert.SerializeObject(newStuff);
+            string MappingsJSON = Newtonsoft.Json.JsonConvert.SerializeObject(CIDMappings);
+
+            Application.Current.Properties["newStuff"] = newStuffJSON;
+            Application.Current.Properties["CIDMappings"] = MappingsJSON;
+        }
+
+        public static bool Load()
+        {
+            object o;
+            if (!Application.Current.Properties.TryGetValue("newStuff",out o))
+            {
+                // no data
+                return false;
+            }
+            string json = (string)o;
+            newStuff = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ExtendedWhatsNewData>>(json);
+
+            object p;
+            if (!Application.Current.Properties.TryGetValue("CIDMappings", out p))
+            {
+                // no data
+                return false;
+            }
+            json = (string)p;
+            CIDMappings = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+            return true;
+        }
+
         public static void setLogger(ILoggingAdapter l)
         {
             Logger = l;
@@ -133,21 +166,36 @@ namespace L2PNewsTicker
             // Simple idea: Cancelled? Report for data source size, then return
             if (ct != null && ct.IsCancellationRequested)
             {
+#if DEBUG
                 Logger.Log("Data for " + cid + " aborted");
+#endif
                 return;
             }
             try
             {
                 // Get data from L2P
                 //var result = await L2PAPIClient.api.Calls.L2PwhatsNewAsync(cid);
-                var result = await L2PAPIClient.api.Calls.L2PwhatsNewSinceAsync(cid, 180000);
-#if DEBUG
-                Logger.Log("Got Data for: " + cid);
-#endif
+                int since;
+                object sinceObject;
+                if (!Application.Current.Properties.TryGetValue("since", out sinceObject))
+                {
+                    since = 60 * 24; // Fallback: 24 hours
+                }
+                else
+                {
+                    since = (int)sinceObject;
+                }
+                var result = await L2PAPIClient.api.Calls.L2PwhatsNewSinceAsync(cid, since);
+//#if DEBUG
+                //Logger.Log("Got Data for: " + cid);
+                Logger.Log(cid+ " ✓");
+//#endif
                 // If cancelled while getting data, return to avoid data inconsistencies
                 if (ct != null && ct.IsCancellationRequested)
                 {
+#if DEBUG
                     Logger.Log("Data for " + cid+" aborted");
+#endif
                     return;
                 }
                 // Add to Data Management
@@ -160,7 +208,8 @@ namespace L2PNewsTicker
                     catch (System.Net.Http.HttpRequestException ex)
 #endif
             {
-                Logger.Log("Error: No Internet Connection? " + ex.Message);
+                //Logger.Log(Localization.Localize("NoInternet"));
+                Logger.Log(cid + " × " + "(Internet Error)");
                 // Error? reduce target number of entries
                 reportError();
             }
@@ -224,9 +273,9 @@ namespace L2PNewsTicker
             {
                 newStuff.Clear();
                 ProgressCallback = callback;
-#if DEBUG
-                Logger.Log("starting Update");
-#endif
+//#if DEBUG
+                Logger.Log(Localization.Localize("Starting"));
+//#endif
                 // get List of Course Rooms
                 var courses = await L2PAPIClient.api.Calls.L2PviewAllCourseInfoByCurrentSemester();
                 IEnumerable<string> cids = courses.dataset.Select((x) => x.uniqueid);
@@ -320,18 +369,18 @@ namespace L2PNewsTicker
                 // For detail traverse whole dataset
                 string result = "";
                 if (data.data.wikis != null && data.data.wikis.Count > 0) result += "  Wikis: " + data.data.wikis.Count + Environment.NewLine;
-                if (data.data.announcements != null && data.data.announcements.Count > 0) result += "  Announcements: " + data.data.announcements.Count + Environment.NewLine;
-                if (data.data.assignements != null && data.data.assignements.Count > 0) result += "  Assignments: " + data.data.assignements.Count + Environment.NewLine;
-                if (data.data.discussionItems != null && data.data.discussionItems.Count > 0) result += "  Discussions: " + data.data.discussionItems.Count + Environment.NewLine;
+                if (data.data.announcements != null && data.data.announcements.Count > 0) result += "  "+ Localization.Localize("Announcements")+": " + data.data.announcements.Count + Environment.NewLine;
+                if (data.data.assignements != null && data.data.assignements.Count > 0) result += "  "+ Localization.Localize("Assignments")+": " + data.data.assignements.Count + Environment.NewLine;
+                if (data.data.discussionItems != null && data.data.discussionItems.Count > 0) result += "  "+ Localization.Localize("Discussions")+": " + data.data.discussionItems.Count + Environment.NewLine;
                 if (data.data.emails != null && data.data.emails.Count > 0) result += "  Emails: " + data.data.emails.Count + Environment.NewLine;
                 if (data.data.hyperlinks != null && data.data.hyperlinks.Count > 0) result += "  Hyperlinks: " + data.data.hyperlinks.Count + Environment.NewLine;
-                if (data.data.learningMaterials != null && data.data.learningMaterials.Count > 0) result += "  LearningMaterials: " + data.data.learningMaterials.Count + Environment.NewLine;
-                if (data.data.literature != null && data.data.literature.Count > 0) result += "  Literature: " + data.data.literature.Count + Environment.NewLine;
-                if (data.data.mediaLibraries != null && data.data.mediaLibraries.Count > 0) result += "  Media: " + data.data.mediaLibraries.Count + Environment.NewLine;
-                if (data.data.sharedDocuments != null && data.data.sharedDocuments.Count > 0) result += "  SharedDocs: " + data.data.sharedDocuments.Count + Environment.NewLine;
+                if (data.data.learningMaterials != null && data.data.learningMaterials.Count > 0) result += "  "+ Localization.Localize("LearningMaterials")+": " + data.data.learningMaterials.Count + Environment.NewLine;
+                if (data.data.literature != null && data.data.literature.Count > 0) result += "  "+ Localization.Localize("Literature")+": " + data.data.literature.Count + Environment.NewLine;
+                if (data.data.mediaLibraries != null && data.data.mediaLibraries.Count > 0) result += "  "+ Localization.Localize("MediaLibraries")+": " + data.data.mediaLibraries.Count + Environment.NewLine;
+                if (data.data.sharedDocuments != null && data.data.sharedDocuments.Count > 0) result += "  "+ Localization.Localize("SharedDocuments")+": " + data.data.sharedDocuments.Count + Environment.NewLine;
                 // If empty, just inform user
                 if (result == "")
-                    result = "Nothing new";
+                    result = Localization.Localize("NothingNew");
                 cell.Detail = result;
                 cell.cid = data.cid;
                 cellData.Add(cell);
