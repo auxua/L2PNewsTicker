@@ -135,6 +135,11 @@ namespace L2PAPIClient
                     // Invalid Token, no refreshToken success  - delete it
                     Config.setAccessToken("");
                 }
+                else
+                {
+                    // Successful reconstructed Tokens
+                    State = AuthenticationState.ACTIVE;
+                }
             }
             else
             {

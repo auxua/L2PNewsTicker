@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+using Xamarin.Forms;
+
 namespace L2PAPIClient
 {
     class Config
     {
-	internal const string OAuthEndPoint = "https://oauth.campus.rwth-aachen.de/oauth2waitress/oauth2.svc/code";
+        internal const string OAuthEndPoint = "https://oauth.campus.rwth-aachen.de/oauth2waitress/oauth2.svc/code";
 
         internal const string OAuthTokenEndPoint = "https://oauth.campus.rwth-aachen.de/oauth2waitress/oauth2.svc/token";
 
@@ -22,24 +24,39 @@ namespace L2PAPIClient
 
         internal static string getAccessToken()
         {
-            return accessToken;
+            //return accessToken;
+            object o;
+            if (Application.Current.Properties.TryGetValue("accessToken", out o))
+                return (string)o;
+
+            // Not found
+            return "";
+
         }
 
         internal static void setAccessToken(string token)
         {
-            accessToken = token;
+            //accessToken = token;
+            Application.Current.Properties["accessToken"] = token;
         }
 
         private static string refreshToken = "";
 
         internal static string getRefreshToken()
         {
-            return refreshToken;
+            //return refreshToken;
+            object o;
+            if (Application.Current.Properties.TryGetValue("refreshToken", out o))
+                return (string)o;
+
+            // Not found
+            return "";
         }
 
         internal static void setRefreshToken(string token)
         {
-            refreshToken = token;
+            //refreshToken = token;
+            Application.Current.Properties["refreshToken"] = token;
         }
 
 
@@ -47,12 +64,19 @@ namespace L2PAPIClient
 
         internal static string getDeviceToken()
         {
-            return deviceToken;
+            //return deviceToken;
+            object o;
+            if (Application.Current.Properties.TryGetValue("deviceToken", out o))
+                return (string)o;
+
+            // Not found
+            return "";
         }
 
         internal static void setDeviceToken(string token)
         {
-            deviceToken = token;
+            //deviceToken = token;
+            Application.Current.Properties["deviceToken"] = token;
         }
 
 
