@@ -15,6 +15,8 @@ namespace L2PNewsTicker
             ListView list = new ListView();
             list.ItemTemplate = new DataTemplate(typeof(WhatsNewElementCell));
             list.HasUnevenRows = true;
+			if (Device.OS == TargetPlatform.iOS)
+				list.BackgroundColor = MainPage.Background;
 
             ContentView view = new ContentView();
             view.Content = list;

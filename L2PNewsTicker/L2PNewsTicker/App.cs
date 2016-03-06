@@ -11,9 +11,14 @@ namespace L2PNewsTicker
 	{
 		public App ()
 		{
-            // The root page of your application
+            
+#if RESET
+			Application.Current.Properties.Clear();
+#endif
+			// The root page of your application
             MainPage = new NavigationPage(new MainPage());
             //MainPage = new MainPage();
+
 		}
 
 		protected override void OnStart ()

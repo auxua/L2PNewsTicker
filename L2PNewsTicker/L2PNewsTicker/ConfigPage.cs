@@ -17,20 +17,38 @@ namespace L2PNewsTicker
 
         public ConfigPage()
         {
+            BackgroundColor = MainPage.Background;
+
             StackLayout StepperStack = new StackLayout();
             StepperStack.Orientation = StackOrientation.Vertical;
             StepperStack.Padding = new Thickness(10, 10);
 
             Label TopLabel = new Label();
             TopLabel.Text = Localization.Localize("TimeSpanSince");
+            TopLabel.TextColor = MainPage.FontColor;
 
             StatusLabel = new Label();
-            StatusLabel.Text = "";
-
+            StatusLabel.Text = " ";
+            StatusLabel.TextColor = MainPage.FontColor;
+            StatusLabel.HorizontalOptions = LayoutOptions.CenterAndExpand;
+            StatusLabel.VerticalOptions = LayoutOptions.Center;
 
             Button SaveButton = new Button();
             SaveButton.Text = Localization.Localize("SaveChanges");
             SaveButton.Clicked += SaveButton_Clicked;
+            SaveButton.TextColor = MainPage.FontColor;
+            SaveButton.HorizontalOptions = LayoutOptions.CenterAndExpand;
+
+            StackLayout StatusStack = new StackLayout();
+            StatusStack.Orientation = StackOrientation.Horizontal;
+            StatusStack.Children.Add(SaveButton);
+            //StatusStack.Children.Add(StatusLabel);
+
+            Button FAQButton = new Button();
+            FAQButton.Text = "FAQs (Online)";
+            FAQButton.TextColor = MainPage.FontColor;
+            FAQButton.Clicked += ((X, y) => Device.OpenUri(new Uri("https://apps.auxua.eu")));
+            FAQButton.HorizontalOptions = LayoutOptions.Center;
 
             // Get Time from current Config
             object time;
@@ -52,11 +70,13 @@ namespace L2PNewsTicker
             StackLayout DayStack = new StackLayout();
             DayStack.Orientation = StackOrientation.Horizontal;
             Label DayLabel = new Label();
-            DayLabel.Text = "Days";
+            DayLabel.Text = Localization.Localize("Days");
             DayLabel.VerticalOptions = LayoutOptions.Center;
+            DayLabel.TextColor = MainPage.FontColor;
             Label DayCountLabel = new Label();
             DayCountLabel.Text = days.ToString();
             DayCountLabel.VerticalOptions = LayoutOptions.Center;
+            DayCountLabel.TextColor = MainPage.FontColor;
             Stepper DayStepper = new Stepper();
             DayStepper.Minimum = 0;
             DayStepper.Value = days;
@@ -65,6 +85,7 @@ namespace L2PNewsTicker
                 DayCountLabel.Text = DayStepper.Value.ToString();
                 days = (int)DayStepper.Value;
                 });
+			if (Device.OS == TargetPlatform.iOS) DayStepper.BackgroundColor = MainPage.FontColor;
             DayStack.Children.Add(DayLabel);
             DayStack.Children.Add(DayCountLabel);
             DayStack.Children.Add(DayStepper);
@@ -74,11 +95,13 @@ namespace L2PNewsTicker
             StackLayout HourStack = new StackLayout();
             HourStack.Orientation = StackOrientation.Horizontal;
             Label HourLabel = new Label();
-            HourLabel.Text = "Hours";
+            HourLabel.Text = Localization.Localize("Hours");
             HourLabel.VerticalOptions = LayoutOptions.Center;
+            HourLabel.TextColor = MainPage.FontColor;
             Label HourCountLabel = new Label();
             HourCountLabel.Text = hours.ToString();
             HourCountLabel.VerticalOptions = LayoutOptions.Center;
+            HourCountLabel.TextColor = MainPage.FontColor;
             Stepper HourStepper = new Stepper();
             HourStepper.Minimum = 0;
             HourStepper.Maximum = 23;
@@ -88,6 +111,7 @@ namespace L2PNewsTicker
                 HourCountLabel.Text = HourStepper.Value.ToString();
                 hours = (int)HourStepper.Value;
             });
+			if (Device.OS == TargetPlatform.iOS) HourStepper.BackgroundColor = MainPage.FontColor;
             HourStack.Children.Add(HourLabel);
             HourStack.Children.Add(HourCountLabel);
             HourStack.Children.Add(HourStepper);
@@ -97,11 +121,13 @@ namespace L2PNewsTicker
             StackLayout MinuteStack = new StackLayout();
             MinuteStack.Orientation = StackOrientation.Horizontal;
             Label MinuteLabel = new Label();
-            MinuteLabel.Text = "Hours";
+            MinuteLabel.Text = Localization.Localize("Minutes");
             MinuteLabel.VerticalOptions = LayoutOptions.Center;
+            MinuteLabel.TextColor = MainPage.FontColor;
             Label MinuteCountLabel = new Label();
             MinuteCountLabel.Text = minutes.ToString();
             MinuteCountLabel.VerticalOptions = LayoutOptions.Center;
+            MinuteCountLabel.TextColor = MainPage.FontColor;
             Stepper MinuteStepper = new Stepper();
             MinuteStepper.Minimum = 0;
             MinuteStepper.Maximum = 59;
@@ -111,6 +137,7 @@ namespace L2PNewsTicker
                 minutes = (int)MinuteStepper.Value;
 
                 });
+			if (Device.OS == TargetPlatform.iOS) MinuteStepper.BackgroundColor = MainPage.FontColor;
             MinuteStack.Children.Add(MinuteLabel);
             MinuteStack.Children.Add(MinuteCountLabel);
             MinuteStack.Children.Add(MinuteStepper);
@@ -120,8 +147,10 @@ namespace L2PNewsTicker
             StepperStack.Children.Add(DayStack);
             StepperStack.Children.Add(HourStack);
             StepperStack.Children.Add(MinuteStack);
-            StepperStack.Children.Add(SaveButton);
-            StepperStack.Children.Add(StatusLabel);
+            //StepperStack.Children.Add(SaveButton);
+            //StepperStack.Children.Add(StatusLabel);
+            StepperStack.Children.Add(StatusStack);
+            StepperStack.Children.Add(FAQButton);
 
             Title = Localization.Localize("Config");
 
@@ -139,7 +168,7 @@ namespace L2PNewsTicker
                 return;
             }
             Application.Current.Properties["since"] = time;
-            Device.BeginInvokeOnMainThread(() => StatusLabel.Text = "✓");
+            //Device.BeginInvokeOnMainThread(() => StatusLabel.Text = "✓");
         }
     }
 }

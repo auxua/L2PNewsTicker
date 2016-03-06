@@ -207,7 +207,9 @@ namespace L2PNewsTicker
             list = new ListView();
             list.ItemTapped += TappedCourse;
             list.HasUnevenRows = true;
-
+			if (Device.OS == TargetPlatform.iOS)
+				list.BackgroundColor = MainPage.Background;
+				
             /*var customCell = new DataTemplate(typeof(TextCell));
             customCell.SetBinding(TextCell.TextProperty, "Text");
             customCell.SetBinding(TextCell.DetailProperty, "Detail");
@@ -257,6 +259,7 @@ namespace L2PNewsTicker
             ToolbarItem tb = new ToolbarItem();
             tb.Text = Localization.Localize("Config");
             tb.Command = GetConfigPage;
+            tb.Icon = String.Format("{0}{1}.png", Device.OnPlatform("", "", "Assets/"), "settingsPadded");
             ToolbarItems.Add(tb);
 
             // Toggle Visibility for Authorization Status
@@ -393,6 +396,8 @@ namespace L2PNewsTicker
                 //label.Text = "Starting";
                 label.Text = Localization.Localize("Starting");
 
+				Device.BeginInvokeOnMainThread(() => AuthorizeButton.IsEnabled = false);
+
                 string url;
                 try
                 {
@@ -409,23 +414,37 @@ namespace L2PNewsTicker
                 
                 Device.OpenUri(new Uri(url));
 
+				bool auth = false;
+
                 // just try to check authorize sometimes in case of slow device
-                for (int i = 0; i < 50; i++)
+                for (int i = 0; i < 10; i++)
                 {
                     Thread.Sleep(5000);
-                    bool auth = await L2PAPIClient.AuthenticationManager.CheckAuthenticationProgressAsync();
+                    auth = await L2PAPIClient.AuthenticationManager.CheckAuthenticationProgressAsync();
                     if (auth)
                     {
                         label.Text = Localization.Localize("Done");
                         break;
                     }
                 }
-
+				if (!auth)
+				{
+					// Did not succeed
+					throw new Exception();
+				}
             }
             catch (System.Net.WebException ex)
             {
                 label.Text = Localization.Localize("NoInternet");
             }
+			catch (Exception ex)
+			{
+				// Did not succeed
+				Device.BeginInvokeOnMainThread(() => {
+					AuthorizeButton.IsEnabled = false;
+					label.Text = Localization.Localize("Ready");
+				});
+			}
             finally
             {
                 // Check Status

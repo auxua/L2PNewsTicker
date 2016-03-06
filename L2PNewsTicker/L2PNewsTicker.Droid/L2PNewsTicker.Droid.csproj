@@ -113,6 +113,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\AndroidManifest.xml" />
+    <AndroidResource Include="Resources\Drawable\settingsPadded.png" />
   </ItemGroup>
   <Import Project="..\L2PNewsTicker\L2PNewsTicker.projitems" Label="Shared" Condition="Exists('..\L2PNewsTicker\L2PNewsTicker.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
