@@ -169,6 +169,7 @@ namespace L2PNewsTicker
             }
             Application.Current.Properties["since"] = time;
             //Device.BeginInvokeOnMainThread(() => StatusLabel.Text = "✓");
+            Device.BeginInvokeOnMainThread(() => DisplayAlert("Saved", Localization.Localize("Saved"), "OK"));
         }
     }
 }

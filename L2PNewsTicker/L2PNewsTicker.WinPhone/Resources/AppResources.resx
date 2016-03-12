@@ -141,6 +141,12 @@
   <data name="AssignmentsDE" xml:space="preserve">
     <value>Übungen</value>
   </data>
+  <data name="AuthorizationProblem" xml:space="preserve">
+    <value>The RWTH Servers replied with a authorization problem. Please Authorize the App</value>
+  </data>
+  <data name="AuthorizationProblemDE" xml:space="preserve">
+    <value>Die RWTH Server haben ein Problem mit der Autorisierung gemeldet. Bitte erneut autorisieren.</value>
+  </data>
   <data name="Authorize" xml:space="preserve">
     <value>Authorize</value>
   </data>
@@ -200,6 +206,12 @@
   </data>
   <data name="FolderDE" xml:space="preserve">
     <value>Ordner</value>
+  </data>
+  <data name="GotCourses" xml:space="preserve">
+    <value>Got Courses</value>
+  </data>
+  <data name="GotCoursesDE" xml:space="preserve">
+    <value>Kursliste abgeholt</value>
   </data>
   <data name="Hours" xml:space="preserve">
     <value>Hours</value>
@@ -291,6 +303,12 @@
   <data name="SaveChangesDE" xml:space="preserve">
     <value>Speichern</value>
   </data>
+  <data name="Saved" xml:space="preserve">
+    <value>Changes Saved</value>
+  </data>
+  <data name="SavedDE" xml:space="preserve">
+    <value>Änderungen gespeichert</value>
+  </data>
   <data name="SharedDocument" xml:space="preserve">
     <value>Shared Document</value>
   </data>
@@ -314,5 +332,11 @@
   </data>
   <data name="TimeSpanSinceDE" xml:space="preserve">
     <value>Die Zeitspanne, in der nach Neuigkeiten gesucht werden soll</value>
+  </data>
+  <data name="UserAuthorizationInformation" xml:space="preserve">
+    <value>This App will now open a web page in your browser. Please authorize this App and come back.</value>
+  </data>
+  <data name="UserAuthorizationInformationDE" xml:space="preserve">
+    <value>Eine Webseite wird im Browser geöffnet. Bitte diese App authorisieren und zurück kommen.</value>
   </data>
 </root>

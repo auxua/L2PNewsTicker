@@ -129,6 +129,9 @@
   <data name="Assignments" xml:space="preserve">
     <value>Assignments</value>
   </data>
+  <data name="AuthorizationProblem" xml:space="preserve">
+    <value>The RWTH Servers replied with a authorization problem. Please Authorize the App</value>
+  </data>
   <data name="Authorize" xml:space="preserve">
     <value>Authorize</value>
   </data>
@@ -158,6 +161,9 @@
   </data>
   <data name="Folder" xml:space="preserve">
     <value>Folder</value>
+  </data>
+  <data name="GotCourses" xml:space="preserve">
+    <value>Got Courses</value>
   </data>
   <data name="Hours" xml:space="preserve">
     <value>Hours</value>
@@ -201,6 +207,9 @@
   <data name="SaveChanges" xml:space="preserve">
     <value>Save Changes</value>
   </data>
+  <data name="Saved" xml:space="preserve">
+    <value>Changes saved</value>
+  </data>
   <data name="SharedDocument" xml:space="preserve">
     <value>Shared Document</value>
   </data>
@@ -212,5 +221,8 @@
   </data>
   <data name="TimeSpanSince" xml:space="preserve">
     <value>The Timespan to query for news in the course rooms</value>
+  </data>
+  <data name="UserAuthorizationInformation" xml:space="preserve">
+    <value>This App will now open a web page in your browser. Please authorize this App and come back.</value>
   </data>
 </root>

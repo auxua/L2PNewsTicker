@@ -139,11 +139,23 @@ namespace L2PNewsTicker
 
         private async Task StateWrapper()
         {
+
+            bool auth;
+
+            // Data-based approach:
+            //  Try getting Data from DataManager. If there is Data, assume authorization
+            DataManager.Load();
+            auth = DataManager.hasData();
+
+            /*
+            // Naive approach - only works if there is Internet Conenction
             await L2PAPIClient.AuthenticationManager.CheckAccessTokenAsync();
-            bool auth = (L2PAPIClient.AuthenticationManager.getState() == AuthenticationManager.AuthenticationState.ACTIVE);
+            auth = (L2PAPIClient.AuthenticationManager.getState() == AuthenticationManager.AuthenticationState.ACTIVE);
+            */
             IsAuthorized = auth;
             // Try Loading the old values 
-            if (DataManager.Load())
+            //if (DataManager.Load())
+            if (auth)
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
@@ -235,10 +247,10 @@ namespace L2PNewsTicker
                     //StartUpdateButton,
                     buttons,
                     bar,
-#if DEBUG
+//#if DEBUG
                     label,
                     line,
-#endif
+//#endif
                     list
                 },
                 BackgroundColor = Background,
@@ -375,6 +387,15 @@ namespace L2PNewsTicker
             catch (AuthenticationManager.NotAuthorizedException)
             {
                 // handle Authorization Issue
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    this.IsAuthorized = false;
+                    this.IsBusy = false;
+                    this.IsGettingData = false;
+                    bar.ProgressTo(0, 250, Easing.BounceOut);
+                    label.Text = Localization.Localize("Ready");
+                    DisplayAlert("Problem", Localization.Localize("AuthorizationProblem"), "OK");
+                });
                 return;
             }
         }
@@ -411,13 +432,19 @@ namespace L2PNewsTicker
                 {
                     throw new System.Net.WebException();
                 }
+
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    await DisplayAlert("Authorization", Localization.Localize("UserAuthorizationInformation"), "OK");
+                    Device.OpenUri(new Uri(url));
+                });
+
                 
-                Device.OpenUri(new Uri(url));
 
 				bool auth = false;
 
                 // just try to check authorize sometimes in case of slow device
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < 12; i++)
                 {
                     Thread.Sleep(5000);
                     auth = await L2PAPIClient.AuthenticationManager.CheckAuthenticationProgressAsync();

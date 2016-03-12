@@ -133,6 +133,24 @@ namespace L2PNewsTicker.WinPhone.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die The RWTH Servers replied with a authorization problem. Please Authorize the App ähnelt.
+        /// </summary>
+        public static string AuthorizationProblem {
+            get {
+                return ResourceManager.GetString("AuthorizationProblem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Die RWTH Server haben ein Problem mit der Autorisierung gemeldet. Bitte erneut autorisieren. ähnelt.
+        /// </summary>
+        public static string AuthorizationProblemDE {
+            get {
+                return ResourceManager.GetString("AuthorizationProblemDE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Authorize ähnelt.
         /// </summary>
         public static string Authorize {
@@ -309,6 +327,24 @@ namespace L2PNewsTicker.WinPhone.Resources {
         public static string FolderDE {
             get {
                 return ResourceManager.GetString("FolderDE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Got Courses ähnelt.
+        /// </summary>
+        public static string GotCourses {
+            get {
+                return ResourceManager.GetString("GotCourses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Kursliste abgeholt ähnelt.
+        /// </summary>
+        public static string GotCoursesDE {
+            get {
+                return ResourceManager.GetString("GotCoursesDE", resourceCulture);
             }
         }
         
@@ -583,6 +619,24 @@ namespace L2PNewsTicker.WinPhone.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Changes Saved ähnelt.
+        /// </summary>
+        public static string Saved {
+            get {
+                return ResourceManager.GetString("Saved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Änderungen gespeichert ähnelt.
+        /// </summary>
+        public static string SavedDE {
+            get {
+                return ResourceManager.GetString("SavedDE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Shared Document ähnelt.
         /// </summary>
         public static string SharedDocument {
@@ -651,6 +705,24 @@ namespace L2PNewsTicker.WinPhone.Resources {
         public static string TimeSpanSinceDE {
             get {
                 return ResourceManager.GetString("TimeSpanSinceDE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die This App will now open a web page in your browser. Please authorize this App and come back. ähnelt.
+        /// </summary>
+        public static string UserAuthorizationInformation {
+            get {
+                return ResourceManager.GetString("UserAuthorizationInformation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Eine Webseite wird im Browser geöffnet. Bitte diese App authorisieren und zurück kommen. ähnelt.
+        /// </summary>
+        public static string UserAuthorizationInformationDE {
+            get {
+                return ResourceManager.GetString("UserAuthorizationInformationDE", resourceCulture);
             }
         }
     }

@@ -79,6 +79,11 @@ namespace L2PNewsTicker
         private static IGetDataProgressCallBack ProgressCallback = null;
         private static Dictionary<string, string> CIDMappings = new Dictionary<string, string>();
 
+        public static bool hasData()
+        {
+            return (newStuff.Count > 0);
+        }
+
         public static void Store()
         {
             string newStuffJSON = Newtonsoft.Json.JsonConvert.SerializeObject(newStuff);
@@ -285,9 +290,9 @@ namespace L2PNewsTicker
                     //CIDMappings.Add(item.uniqueid, item.courseTitle);
                 }
 
-#if DEBUG
-                Logger.Log("Got Courses");
-#endif
+//#if DEBUG
+                Logger.Log(Localization.Localize("GotCourses"));
+//#endif
 
                 ProgressCallback.beforeGettingCourses(cids.Count());
                 // Use Tasks for Multithreading
@@ -308,6 +313,20 @@ namespace L2PNewsTicker
                     i++;
                 }
                 
+            }
+            /*catch (AggregateException ex)
+            {
+                // Idea: If Inner Exception is 
+                if (ex.InnerException is L2PAPIClient.AuthenticationManager.NotAuthorizedException)
+                {
+                    throw ex.InnerException;
+                }
+            }*/
+            catch (L2PAPIClient.AuthenticationManager.NotAuthorizedException ex)
+            {
+                // Authorization problem - throw further
+                throw ex;
+
             }
             catch (Exception ex)
             {

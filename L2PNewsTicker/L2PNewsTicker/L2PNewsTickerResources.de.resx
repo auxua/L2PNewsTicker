@@ -129,6 +129,9 @@
   <data name="Assignments" xml:space="preserve">
     <value>Übungen</value>
   </data>
+  <data name="AuthorizationProblem" xml:space="preserve">
+    <value>Die RWTH Server haben ein Problem mit der Autorisierung gemeldet. Bitte erneut autorisieren.</value>
+  </data>
   <data name="Authorize" xml:space="preserve">
     <value>Autorisieren</value>
   </data>
@@ -158,6 +161,9 @@
   </data>
   <data name="Folder" xml:space="preserve">
     <value>Ordner</value>
+  </data>
+  <data name="GotCourses" xml:space="preserve">
+    <value>Kursliste abgeholt</value>
   </data>
   <data name="Hours" xml:space="preserve">
     <value>Stunden</value>
@@ -201,6 +207,9 @@
   <data name="SaveChanges" xml:space="preserve">
     <value>Speichern</value>
   </data>
+  <data name="Saved" xml:space="preserve">
+    <value>Änderungen gespeichert</value>
+  </data>
   <data name="SharedDocument" xml:space="preserve">
     <value>Gemeinsames Dokument</value>
   </data>
@@ -212,5 +221,8 @@
   </data>
   <data name="TimeSpanSince" xml:space="preserve">
     <value>Die Zeitspanne, in der nach Neuigkeiten gesucht werden soll</value>
+  </data>
+  <data name="UserAuthorizationInformation" xml:space="preserve">
+    <value>Eine Webseite wird im Browser geöffnet. Bitte diese App authorisieren und zurück kommen.</value>
   </data>
 </root>
