@@ -91,6 +91,12 @@ namespace L2PNewsTicker
 
             Application.Current.Properties["newStuff"] = newStuffJSON;
             Application.Current.Properties["CIDMappings"] = MappingsJSON;
+
+#if WINDOWS_PHONE
+            // nothing
+#else
+            Application.Current.SavePropertiesAsync();
+#endif
         }
 
         public static bool Load()

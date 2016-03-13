@@ -446,7 +446,8 @@ namespace L2PNewsTicker
                 // just try to check authorize sometimes in case of slow device
                 for (int i = 0; i < 12; i++)
                 {
-                    Thread.Sleep(5000);
+                    //Thread.Sleep(5000);
+                    await Task.Delay(5000);
                     auth = await L2PAPIClient.AuthenticationManager.CheckAuthenticationProgressAsync();
                     if (auth)
                     {
@@ -469,7 +470,7 @@ namespace L2PNewsTicker
 				// Did not succeed
 				Device.BeginInvokeOnMainThread(() => {
 					AuthorizeButton.IsEnabled = false;
-					label.Text = Localization.Localize("Ready");
+					label.Text = "Timeout "+Localization.Localize("Ready");
 				});
 			}
             finally
