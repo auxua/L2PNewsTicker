@@ -332,7 +332,8 @@ namespace L2PNewsTicker
                 });
                 //DataManager.ShowUpdatesViaLog();
                 // Save the data to local persistent storage
-                DataManager.Store();
+                //DataManager.Store();
+                DataManager.StoreAsTask();
 
             }
 
@@ -371,6 +372,8 @@ namespace L2PNewsTicker
                         bar.ProgressTo(0, 250, Easing.Linear);
                         IsBusy = false;
                         IsGettingData = false;
+                        // enable this list in case, there is data to show and tap
+                        list.IsEnabled = DataManager.hasData();
                     });
                 
                 return;
@@ -397,6 +400,17 @@ namespace L2PNewsTicker
                     DisplayAlert("Problem", Localization.Localize("AuthorizationProblem"), "OK");
                 });
                 return;
+            }
+            catch // Otherwise, just Internet Problems
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    label.Text = "Error (Internet Problem)";
+                    IsBusy = false;
+                    IsGettingData = false;
+                    bar.ProgressTo(0, 250, Easing.BounceOut);
+                });
+                
             }
         }
         

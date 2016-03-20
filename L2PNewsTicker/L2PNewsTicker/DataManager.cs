@@ -47,6 +47,10 @@ namespace L2PNewsTicker
         /// Called each time a DataCall is finished
         /// </summary>
         void onProgress();
+        /*/// <summary>
+        /// Called when the operation was aborted
+        /// </summary>
+        void onCancel();*/
     }
 
     public class CourseCellAdapter
@@ -73,6 +77,7 @@ namespace L2PNewsTicker
     public class DataManager
     {
         private static List<ExtendedWhatsNewData> newStuff = new List<ExtendedWhatsNewData>();
+        private static List<ExtendedWhatsNewData> tmpStuff = new List<ExtendedWhatsNewData>();
         private static Object myLock = new object();
         private static ILoggingAdapter Logger = new NoneLogger();
         private static int cidCount = 0;
@@ -84,19 +89,34 @@ namespace L2PNewsTicker
             return (newStuff.Count > 0);
         }
 
+        public static void StoreAsTask()
+        {
+            Task t = new Task(() => Store());
+            t.Start();
+        }
+
         public static void Store()
         {
-            string newStuffJSON = Newtonsoft.Json.JsonConvert.SerializeObject(newStuff);
-            string MappingsJSON = Newtonsoft.Json.JsonConvert.SerializeObject(CIDMappings);
+            try
+            {
+                string newStuffJSON = Newtonsoft.Json.JsonConvert.SerializeObject(newStuff);
+                string MappingsJSON = Newtonsoft.Json.JsonConvert.SerializeObject(CIDMappings);
 
-            Application.Current.Properties["newStuff"] = newStuffJSON;
-            Application.Current.Properties["CIDMappings"] = MappingsJSON;
+                Application.Current.Properties["newStuff"] = newStuffJSON;
+                Application.Current.Properties["CIDMappings"] = MappingsJSON;
 
 #if WINDOWS_PHONE
             // nothing
 #else
-            Application.Current.SavePropertiesAsync();
+                Application.Current.SavePropertiesAsync();
 #endif
+            }
+            catch
+            {
+                // Typcial Exception: Invalid Acces, because Collection is updated during json-conversion.
+                // For now, just try again
+                StoreAsTask();
+            }
         }
 
         public static bool Load()
@@ -135,14 +155,17 @@ namespace L2PNewsTicker
             public void Log(string text) { }
         }
         
-
+        /// <summary>
+        /// Adds more Stuff to tmpStuff
+        /// </summary>
         private static void addStuff(L2PAPIClient.DataModel.L2PWhatsNewDataType data, string cid)
         {
             lock (myLock)
             {
                 ExtendedWhatsNewData d = new ExtendedWhatsNewData(data);
                 d.cid = cid;
-                newStuff.Add(d);
+                //newStuff.Add(d);
+                tmpStuff.Add(d);
             }
             ProgressCallback.onProgress();
             
@@ -154,7 +177,8 @@ namespace L2PNewsTicker
             bool result;
             lock (myLock)
             {
-                result = (newStuff.Count >= cidCount);
+                //result = (newStuff.Count >= cidCount);
+                result = (tmpStuff.Count >= cidCount);
             }
             return result;
         }
@@ -224,11 +248,19 @@ namespace L2PNewsTicker
                 // Error? reduce target number of entries
                 reportError();
             }
+            catch (Exception)
+            {
+                Logger.Log(cid + " x " + "(Server/Internet Error)");
+                reportError();
+            }
             // finished?
             if (isFull())
             {
                 if (ProgressCallback != null)
                 {
+                    newStuff.Clear();
+                    newStuff.AddRange(tmpStuff);
+                    //newStuff = tmpStuff;
                     ProgressCallback.onCompleted();
                 }
 
@@ -282,7 +314,8 @@ namespace L2PNewsTicker
         {
             try
             {
-                newStuff.Clear();
+                //newStuff.Clear();
+                tmpStuff.Clear();
                 ProgressCallback = callback;
 //#if DEBUG
                 Logger.Log(Localization.Localize("Starting"));
@@ -333,10 +366,6 @@ namespace L2PNewsTicker
                 // Authorization problem - throw further
                 throw ex;
 
-            }
-            catch (Exception ex)
-            {
-                Logger.ImportantLog("Error occured: " + ex.GetType().ToString() + " -- " + ex.Message);
             }
         }
 

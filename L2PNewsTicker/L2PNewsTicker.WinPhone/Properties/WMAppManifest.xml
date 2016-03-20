@@ -5,7 +5,7 @@
     <Language code="de" />
     <Language code="en" />
   </Languages>
-  <App xmlns="" ProductID="{c811c068-c597-4aa0-8cc8-309b458f351c}" Title="L2P NewsTicker" RuntimeType="Silverlight" Version="1.1.1.0" Genre="apps.normal" Author="Arno Schmetz" Description="Simple Newsticker for L²P" Publisher="Arno Schmetz" PublisherID="{49acaac9-475d-4d63-82a6-0a46a7b77c65}">
+  <App xmlns="" ProductID="{c811c068-c597-4aa0-8cc8-309b458f351c}" Title="L2P NewsTicker" RuntimeType="Silverlight" Version="1.1.2.0" Genre="apps.normal" Author="Arno Schmetz" Description="Simple Newsticker for L²P" Publisher="Arno Schmetz" PublisherID="{49acaac9-475d-4d63-82a6-0a46a7b77c65}">
     <IconPath IsRelative="true" IsResource="false">Assets\ApplicationIcon.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_NETWORKING" />
