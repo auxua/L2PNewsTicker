@@ -319,14 +319,47 @@ namespace L2PNewsTicker
                 ProgressCallback = callback;
 //#if DEBUG
                 Logger.Log(Localization.Localize("Starting"));
-//#endif
-                // get List of Course Rooms
-                var courses = await L2PAPIClient.api.Calls.L2PviewAllCourseInfoByCurrentSemester();
-                IEnumerable<string> cids = courses.dataset.Select((x) => x.uniqueid);
-                foreach (var item in courses.dataset)
+                //#endif
+                List<string> cids = new List<string>();
+
+                if (UseOldCourses)
                 {
-                    CIDMappings[item.uniqueid] = item.courseTitle;
-                    //CIDMappings.Add(item.uniqueid, item.courseTitle);
+                    // get List of Course Rooms
+                    var courses = await L2PAPIClient.api.Calls.L2PviewAllCourseInfoByCurrentSemester();
+                    var courses2 = await L2PAPIClient.api.Calls.L2PviewAllCourseIfoBySemesterAsync(GetLastSemesterString());
+                    // In case of no Courses in the dataSet, inform caller by using an exception (No Callback-Action!)
+                    if (courses.dataset == null || courses.dataset.Count == 0)
+                    {
+                        if (courses2.dataset == null || courses2.dataset.Count == 0)
+                            throw new NoCoursesException();
+                    }
+                    cids.AddRange(courses.dataset.Select((x) => x.uniqueid));
+                    cids.AddRange(courses2.dataset.Select((x) => x.uniqueid));
+
+                    foreach (var item in courses.dataset)
+                    {
+                        CIDMappings[item.uniqueid] = item.courseTitle;
+                        //CIDMappings.Add(item.uniqueid, item.courseTitle);
+                    }
+                    foreach (var item in courses2.dataset)
+                    {
+                        CIDMappings[item.uniqueid] = item.courseTitle;
+                        //CIDMappings.Add(item.uniqueid, item.courseTitle);
+                    }
+                }
+                else
+                {
+
+                    // get List of Course Rooms
+                    var courses = await L2PAPIClient.api.Calls.L2PviewAllCourseInfoByCurrentSemester();
+                    // In case of no Courses in the dataSet, inform caller by using an exception (No Callback-Action!)
+                    if (courses.dataset == null || courses.dataset.Count == 0) throw new NoCoursesException();
+                    cids.AddRange(courses.dataset.Select((x) => x.uniqueid));
+                    foreach (var item in courses.dataset)
+                    {
+                        CIDMappings[item.uniqueid] = item.courseTitle;
+                        //CIDMappings.Add(item.uniqueid, item.courseTitle);
+                    }
                 }
 
 //#if DEBUG
@@ -368,6 +401,8 @@ namespace L2PNewsTicker
 
             }
         }
+
+        public class NoCoursesException : Exception { }
 
         /// <summary>
         /// Use the Logger to show the content in the data (very raw - only for debug)
@@ -475,6 +510,71 @@ namespace L2PNewsTicker
             if (data.wikis != null) flatList.AddRange(data.wikis);
 
             return flatList;
+        }
+
+        /// <summary>
+        /// Get the term id of the current semester (ws14, etc.)
+        /// </summary>
+        public static string GetCurrentSemesterString()
+        {
+            string s = "";
+            // Depending on month, decide whether summer or winter term
+            if (DateTime.Now.Month < 3 || DateTime.Now.Month > 9)
+                s = "ws";
+            else
+                s = "ss";
+
+            int y = DateTime.Now.Year;
+            if (DateTime.Now.Month < 3) y--; // if it is early in year
+            string year = y.ToString();
+
+            s = s + year[2] + year[3]; // append the two-digit year to term id
+
+            return s;
+        }
+
+        /// <summary>
+        /// Get the semester id of the last semester
+        /// </summary>
+        public static string GetLastSemesterString()
+        {
+            string current = GetCurrentSemesterString();
+
+            // in winter term, we can simply replace ws by ss and we are finished
+            if (current[0] == 'w')
+            {
+                return current.Replace("ws", "ss");
+            }
+            // else, we need to decrease the year
+            string sub = current.Substring(2);
+            int year = int.Parse(sub);
+            year--;
+            return "ws" + year;
+
+        }
+        
+        /// <summary>
+        /// Property indicating whether the user wants to query also the old courses
+        /// </summary>
+        public static bool UseOldCourses
+        {
+            get
+            {
+                try
+                {
+                    bool u = (bool)Application.Current.Properties["UseOldCourses"];
+                    return u;
+                }
+                catch
+                {
+                    Application.Current.Properties["UseOldCourses"] = false;
+                    return false;
+                }
+            }
+            set
+            {
+                Application.Current.Properties["UseOldCourses"] = value;
+            }
         }
     }
 }

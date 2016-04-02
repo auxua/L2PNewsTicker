@@ -171,6 +171,18 @@
   <data name="ConfigDE" xml:space="preserve">
     <value>Einstellungen</value>
   </data>
+  <data name="CurrentAndLastSemester" xml:space="preserve">
+    <value>Current And Last Semester</value>
+  </data>
+  <data name="CurrentAndLastSemesterDE" xml:space="preserve">
+    <value>Aktuelles und letztes Semester</value>
+  </data>
+  <data name="CurrentSemesterOnly" xml:space="preserve">
+    <value>Current Semester Only</value>
+  </data>
+  <data name="CurrentSemesterOnlyDE" xml:space="preserve">
+    <value>Aktuelles Semester</value>
+  </data>
   <data name="Days" xml:space="preserve">
     <value>Days</value>
   </data>
@@ -206,6 +218,12 @@
   </data>
   <data name="FolderDE" xml:space="preserve">
     <value>Ordner</value>
+  </data>
+  <data name="GetDataFrom" xml:space="preserve">
+    <value>Get Course Data from</value>
+  </data>
+  <data name="GetDataFromDE" xml:space="preserve">
+    <value>Hole Kurs-Daten von</value>
   </data>
   <data name="GotCourses" xml:space="preserve">
     <value>Got Courses</value>
@@ -260,6 +278,12 @@
   </data>
   <data name="MinutesDE" xml:space="preserve">
     <value>Minuten</value>
+  </data>
+  <data name="NoCoursesError" xml:space="preserve">
+    <value>No Courses found for User</value>
+  </data>
+  <data name="NoCoursesErrorDE" xml:space="preserve">
+    <value>Keine Kurse gefunden für User</value>
   </data>
   <data name="NoData" xml:space="preserve">
     <value>No Data for this item</value>

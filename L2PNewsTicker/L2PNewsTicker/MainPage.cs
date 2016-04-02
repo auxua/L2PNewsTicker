@@ -50,6 +50,10 @@ namespace L2PNewsTicker
         public static Color FontColor = Color.FromHex("ECEDED");
         public static Color SecondaryColor = Color.FromHex("000000");
 
+        /*public static Color Background = Color.FromHex("EDEDED");
+        public static Color FontColor = Color.FromHex("4169E1");
+        public static Color SecondaryColor = Color.FromHex("000000");*/
+
         public bool IsAuthorized
         {
             get
@@ -398,6 +402,20 @@ namespace L2PNewsTicker
                     bar.ProgressTo(0, 250, Easing.BounceOut);
                     label.Text = Localization.Localize("Ready");
                     DisplayAlert("Problem", Localization.Localize("AuthorizationProblem"), "OK");
+                });
+                return;
+            }
+            catch (DataManager.NoCoursesException)
+            {
+                // handle problem of lack of Courses
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    //this.IsAuthorized = false;
+                    this.IsBusy = false;
+                    this.IsGettingData = false;
+                    bar.ProgressTo(0, 250, Easing.BounceOut);
+                    label.Text = Localization.Localize("Ready");
+                    DisplayAlert("Problem", Localization.Localize("NoCoursesError"), "OK");
                 });
                 return;
             }

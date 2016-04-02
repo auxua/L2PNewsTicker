@@ -223,6 +223,42 @@ namespace L2PNewsTicker.WinPhone.Resources {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Current And Last Semester ähnelt.
+        /// </summary>
+        public static string CurrentAndLastSemester {
+            get {
+                return ResourceManager.GetString("CurrentAndLastSemester", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Aktuelles und letztes Semester ähnelt.
+        /// </summary>
+        public static string CurrentAndLastSemesterDE {
+            get {
+                return ResourceManager.GetString("CurrentAndLastSemesterDE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Current Semester Only ähnelt.
+        /// </summary>
+        public static string CurrentSemesterOnly {
+            get {
+                return ResourceManager.GetString("CurrentSemesterOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Aktuelles Semester ähnelt.
+        /// </summary>
+        public static string CurrentSemesterOnlyDE {
+            get {
+                return ResourceManager.GetString("CurrentSemesterOnlyDE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Days ähnelt.
         /// </summary>
         public static string Days {
@@ -327,6 +363,24 @@ namespace L2PNewsTicker.WinPhone.Resources {
         public static string FolderDE {
             get {
                 return ResourceManager.GetString("FolderDE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Get Course Data from ähnelt.
+        /// </summary>
+        public static string GetDataFrom {
+            get {
+                return ResourceManager.GetString("GetDataFrom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Hole Kurs-Daten von ähnelt.
+        /// </summary>
+        public static string GetDataFromDE {
+            get {
+                return ResourceManager.GetString("GetDataFromDE", resourceCulture);
             }
         }
         
@@ -489,6 +543,24 @@ namespace L2PNewsTicker.WinPhone.Resources {
         public static string MinutesDE {
             get {
                 return ResourceManager.GetString("MinutesDE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die No Courses found for User ähnelt.
+        /// </summary>
+        public static string NoCoursesError {
+            get {
+                return ResourceManager.GetString("NoCoursesError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Keine Kurse gefunden für User ähnelt.
+        /// </summary>
+        public static string NoCoursesErrorDE {
+            get {
+                return ResourceManager.GetString("NoCoursesErrorDE", resourceCulture);
             }
         }
         

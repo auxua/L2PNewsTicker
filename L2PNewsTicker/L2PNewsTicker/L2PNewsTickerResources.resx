@@ -144,6 +144,12 @@
   <data name="Config" xml:space="preserve">
     <value>Settings</value>
   </data>
+  <data name="CurrentAndLastSemester" xml:space="preserve">
+    <value>Current And Last Semester</value>
+  </data>
+  <data name="CurrentSemesterOnly" xml:space="preserve">
+    <value>Current Semester Only</value>
+  </data>
   <data name="Days" xml:space="preserve">
     <value>Days</value>
   </data>
@@ -161,6 +167,9 @@
   </data>
   <data name="Folder" xml:space="preserve">
     <value>Folder</value>
+  </data>
+  <data name="GetDataFrom" xml:space="preserve">
+    <value>Get Course Data from</value>
   </data>
   <data name="GotCourses" xml:space="preserve">
     <value>Got Courses</value>
@@ -188,6 +197,9 @@
   </data>
   <data name="Minutes" xml:space="preserve">
     <value>Minutes</value>
+  </data>
+  <data name="NoCoursesError" xml:space="preserve">
+    <value>No Courses found for User</value>
   </data>
   <data name="NoData" xml:space="preserve">
     <value>No Data for this item</value>

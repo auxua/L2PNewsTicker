@@ -15,6 +15,8 @@ namespace L2PNewsTicker
 
         Label StatusLabel;
 
+        bool useOldCourses;
+
         public ConfigPage()
         {
             BackgroundColor = MainPage.Background;
@@ -49,6 +51,8 @@ namespace L2PNewsTicker
             FAQButton.TextColor = MainPage.FontColor;
             FAQButton.Clicked += ((X, y) => Device.OpenUri(new Uri("https://apps.auxua.eu")));
             FAQButton.HorizontalOptions = LayoutOptions.Center;
+
+            
 
             // Get Time from current Config
             object time;
@@ -147,6 +151,67 @@ namespace L2PNewsTicker
             StepperStack.Children.Add(DayStack);
             StepperStack.Children.Add(HourStack);
             StepperStack.Children.Add(MinuteStack);
+
+            Label pickerLabel = new Label();
+            pickerLabel.Text = Localization.Localize("GetDataFrom");
+            pickerLabel.HorizontalOptions = LayoutOptions.Center;
+
+            Picker picker = new Picker();
+            List<string> pickerOptions = new List<string>();
+            picker.Items.Add(Localization.Localize("CurrentSemesterOnly"));
+            picker.Items.Add(Localization.Localize("CurrentAndLastSemester"));
+            useOldCourses = DataManager.UseOldCourses;
+            if (useOldCourses)
+                picker.SelectedIndex = 1;
+            else
+                picker.SelectedIndex = 0;
+            picker.SelectedIndexChanged += ((X, y) =>
+            {
+                useOldCourses = (picker.SelectedIndex == 1);
+            });
+            StepperStack.Children.Add(pickerLabel);
+            StepperStack.Children.Add(picker);
+
+            /*if (Device.OS == TargetPlatform.iOS)
+            {
+
+                Label OldCoursesLabel = new Label();
+                OldCoursesLabel.Text = "TODO";
+
+                useOldCourses = DataManager.UseOldCourses;
+
+
+                Switch OldCoursesSwitch = new Switch();
+                OldCoursesSwitch.IsToggled = useOldCourses;
+                OldCoursesSwitch.Toggled += ((x, y) =>
+                {
+                    useOldCourses = y.Value;
+                });
+
+                StackLayout OldCoursesStack = new StackLayout();
+                OldCoursesStack.Orientation = StackOrientation.Vertical;
+                OldCoursesStack.Children.Add(OldCoursesLabel);
+                OldCoursesStack.Children.Add(OldCoursesSwitch);
+                OldCoursesStack.HorizontalOptions = LayoutOptions.Center;
+                //OldCoursesStack.VerticalOptions = LayoutOptions.Center;
+
+                StepperStack.Children.Add(OldCoursesStack);
+            /*}
+            else
+            {
+
+                SwitchCell OldCoursesCell = new SwitchCell();
+                OldCoursesCell.Text = "TODO";
+                OldCoursesCell.On = useOldCourses;
+                OldCoursesCell.OnChanged += ((x, y) =>
+                {
+                    useOldCourses = y.Value;
+                });
+
+                StepperStack.Children.Add(OldCoursesCell);
+            }*/
+
+
             //StepperStack.Children.Add(SaveButton);
             //StepperStack.Children.Add(StatusLabel);
             StepperStack.Children.Add(StatusStack);
@@ -168,6 +233,8 @@ namespace L2PNewsTicker
                 return;
             }
             Application.Current.Properties["since"] = time;
+            
+            DataManager.UseOldCourses = useOldCourses;
             //Device.BeginInvokeOnMainThread(() => StatusLabel.Text = "✓");
             Device.BeginInvokeOnMainThread(() => DisplayAlert("Saved", Localization.Localize("Saved"), "OK"));
         }
