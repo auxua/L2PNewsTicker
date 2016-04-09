@@ -3,6 +3,16 @@
 This is an App for getting an overview, what happened in the last time in the L²P Course rooms of the User.
 
 
+## Where to Download
+
+If you just want to download the App for your smartphone, use these links:
+
+* iOS: https://itunes.apple.com/de/app/l2p-newsticker/id1090748510?mt=8
+* Windows Phone: https://www.microsoft.com/de-de/store/apps/l2p-newsticker/9nblggh4qdkx
+* Android: https://play.google.com/store/apps/details?id=com.auxua.l2pnewsticker&hl=de
+
+Or simply go to your App store and search for it.
+
 ## Configuration
 
 In the Project you find the *ConfigSample.cs* - just add your ClientID in here to enable the Client to work.
