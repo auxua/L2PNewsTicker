@@ -46,10 +46,28 @@ namespace L2PNewsTicker
 
         private bool isAuthorized = false;
 
+        /*
+        * Colors of the UI are defined here - maybe by that it will be configurable later...    
+        */
+
+#if OLDCOLORS
         public static Color Background = Color.FromHex("407FB7");
         public static Color FontColor = Color.FromHex("ECEDED");
         public static Color SecondaryColor = Color.FromHex("000000");
-
+#elif WINDOWS_PHONE
+        public static Color Background = Color.FromHex("000000");
+        public static Color FontColor = Color.FromHex("F8F8F8");
+        public static Color SecondaryColor = Color.FromHex("87CEFA");
+#elif ANDROID
+        public static Color Background = Color.FromHex("000000");
+        public static Color FontColor = Color.FromHex("F8F8F8");
+        //public static Color SecondaryColor = Color.FromHex("F0FFFF");
+        public static Color SecondaryColor = Color.FromHex("87CEFA");
+#else
+        public static Color Background = Color.FromHex("FFFFFF");
+        public static Color FontColor = Color.FromHex("111111");
+        public static Color SecondaryColor = Color.FromHex("0000CD");
+#endif
         /*public static Color Background = Color.FromHex("EDEDED");
         public static Color FontColor = Color.FromHex("4169E1");
         public static Color SecondaryColor = Color.FromHex("000000");*/
@@ -187,7 +205,8 @@ namespace L2PNewsTicker
 			AuthorizeButton = new Button();
 			AuthorizeButton.Text = Localization.Localize("Authorize");
 			AuthorizeButton.Clicked += Button_Clicked;
-            AuthorizeButton.TextColor = FontColor;
+			if (Device.OS != TargetPlatform.iOS)
+            	AuthorizeButton.TextColor = FontColor;
             AuthorizeButton.HorizontalOptions = LayoutOptions.FillAndExpand;
 
             /*StartUpdateButton = new Button();
@@ -196,7 +215,8 @@ namespace L2PNewsTicker
 
             RefreshButton = new Button();
             RefreshButton.Text = Localization.Localize("Refresh");
-            RefreshButton.TextColor = FontColor;
+			if (Device.OS != TargetPlatform.iOS)
+            	RefreshButton.TextColor = FontColor;
             RefreshButton.Clicked += GetCourseUpdates;
             RefreshButton.IsEnabled = false;
             RefreshButton.HorizontalOptions = LayoutOptions.FillAndExpand;

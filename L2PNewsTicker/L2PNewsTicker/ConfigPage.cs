@@ -35,10 +35,17 @@ namespace L2PNewsTicker
             StatusLabel.HorizontalOptions = LayoutOptions.CenterAndExpand;
             StatusLabel.VerticalOptions = LayoutOptions.Center;
 
+            Label versionLabel = new Label();
+            versionLabel.Text = "Version: "+App.version;
+            versionLabel.TextColor = MainPage.FontColor;
+            versionLabel.HorizontalOptions = LayoutOptions.CenterAndExpand;
+            versionLabel.VerticalOptions = LayoutOptions.Center;
+
             Button SaveButton = new Button();
             SaveButton.Text = Localization.Localize("SaveChanges");
             SaveButton.Clicked += SaveButton_Clicked;
-            SaveButton.TextColor = MainPage.FontColor;
+			if (Device.OS != TargetPlatform.iOS)
+            	SaveButton.TextColor = MainPage.FontColor;
             SaveButton.HorizontalOptions = LayoutOptions.CenterAndExpand;
 
             StackLayout StatusStack = new StackLayout();
@@ -48,7 +55,8 @@ namespace L2PNewsTicker
 
             Button FAQButton = new Button();
             FAQButton.Text = "FAQs (Online)";
-            FAQButton.TextColor = MainPage.FontColor;
+			if (Device.OS != TargetPlatform.iOS)
+            	FAQButton.TextColor = MainPage.FontColor;
             FAQButton.Clicked += ((X, y) => Device.OpenUri(new Uri("https://apps.auxua.eu")));
             FAQButton.HorizontalOptions = LayoutOptions.Center;
 
@@ -89,7 +97,7 @@ namespace L2PNewsTicker
                 DayCountLabel.Text = DayStepper.Value.ToString();
                 days = (int)DayStepper.Value;
                 });
-			if (Device.OS == TargetPlatform.iOS) DayStepper.BackgroundColor = MainPage.FontColor;
+			//if (Device.OS == TargetPlatform.iOS) DayStepper.BackgroundColor = MainPage.FontColor;
             DayStack.Children.Add(DayLabel);
             DayStack.Children.Add(DayCountLabel);
             DayStack.Children.Add(DayStepper);
@@ -115,7 +123,7 @@ namespace L2PNewsTicker
                 HourCountLabel.Text = HourStepper.Value.ToString();
                 hours = (int)HourStepper.Value;
             });
-			if (Device.OS == TargetPlatform.iOS) HourStepper.BackgroundColor = MainPage.FontColor;
+			//if (Device.OS == TargetPlatform.iOS) HourStepper.BackgroundColor = MainPage.FontColor;
             HourStack.Children.Add(HourLabel);
             HourStack.Children.Add(HourCountLabel);
             HourStack.Children.Add(HourStepper);
@@ -141,7 +149,7 @@ namespace L2PNewsTicker
                 minutes = (int)MinuteStepper.Value;
 
                 });
-			if (Device.OS == TargetPlatform.iOS) MinuteStepper.BackgroundColor = MainPage.FontColor;
+			//if (Device.OS == TargetPlatform.iOS) MinuteStepper.BackgroundColor = MainPage.FontColor;
             MinuteStack.Children.Add(MinuteLabel);
             MinuteStack.Children.Add(MinuteCountLabel);
             MinuteStack.Children.Add(MinuteStepper);
@@ -216,6 +224,7 @@ namespace L2PNewsTicker
             //StepperStack.Children.Add(StatusLabel);
             StepperStack.Children.Add(StatusStack);
             StepperStack.Children.Add(FAQButton);
+            StepperStack.Children.Add(versionLabel);
 
             Title = Localization.Localize("Config");
 
@@ -237,6 +246,7 @@ namespace L2PNewsTicker
             DataManager.UseOldCourses = useOldCourses;
             //Device.BeginInvokeOnMainThread(() => StatusLabel.Text = "✓");
             Device.BeginInvokeOnMainThread(() => DisplayAlert("Saved", Localization.Localize("Saved"), "OK"));
+            
         }
     }
 }

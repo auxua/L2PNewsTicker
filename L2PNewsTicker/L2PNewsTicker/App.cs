@@ -11,7 +11,9 @@ namespace L2PNewsTicker
 {
 	public class App : Application
 	{
-		public App ()
+        public static string version = "1.1.5";
+
+        public App ()
 		{
             
 #if RESET

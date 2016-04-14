@@ -19,7 +19,7 @@
     </SupportedCultures>
     <XapOutputs>true</XapOutputs>
     <GenerateSilverlightManifest>true</GenerateSilverlightManifest>
-    <XapFilename>PhoneApp1_$(Configuration)_$(Platform).xap</XapFilename>
+    <XapFilename>L2PNewsTicker.xap</XapFilename>
     <SilverlightManifestTemplate>Properties\AppManifest.xml</SilverlightManifestTemplate>
     <SilverlightAppEntry>L2PNewsTicker.WinPhone.App</SilverlightAppEntry>
     <ValidateXaml>true</ValidateXaml>
