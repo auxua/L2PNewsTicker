@@ -6,7 +6,7 @@ using Xamarin.Forms;
 
 using L2PAPIClientPortable.DataModel;
 
-namespace L2PNewsTicker
+namespace L2PNewsTickerWin
 {
     public class WhatsNewElementCell : ViewCell
     {

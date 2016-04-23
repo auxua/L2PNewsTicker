@@ -7,7 +7,7 @@ using System.Threading;
 
 using Xamarin.Forms;
 
-namespace L2PNewsTicker
+namespace L2PNewsTickerWin
 {
     /// <summary>
     /// Interface to enable the injection of Logging for the DataManager

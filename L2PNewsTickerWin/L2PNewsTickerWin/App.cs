@@ -7,7 +7,7 @@ using System.Text;
 
 using Xamarin.Forms;
 
-namespace L2PNewsTicker
+namespace L2PNewsTickerWin
 {
 	public class App : Application
 	{

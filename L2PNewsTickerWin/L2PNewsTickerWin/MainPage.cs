@@ -11,7 +11,8 @@ using Xamarin.Forms;
 using System.Diagnostics;
 using System.Windows.Input;
 
-namespace L2PNewsTicker
+
+namespace L2PNewsTickerWin
 {
     
     public class MainPage : ContentPage
@@ -223,7 +224,8 @@ namespace L2PNewsTicker
 
             var line = new BoxView();
             line.HeightRequest = 5;
-            line.Color = FontColor;
+            //line.Color = FontColor;
+            line.Color = Color.FromRgb(0, 84, 159);
             //line.HorizontalOptions = LayoutOptions.CenterAndExpand;
             //line.TranslationX = -10;
             line.WidthRequest = 1080; // just use full width of screen...
@@ -256,6 +258,7 @@ namespace L2PNewsTicker
 
             bar = new ProgressBar();
             bar.BackgroundColor = FontColor;
+            bar.HorizontalOptions = LayoutOptions.Fill;
 
             TestPageLoggingAdapter Logger = new TestPageLoggingAdapter(label);
             DataManager.setLogger(Logger);
@@ -295,7 +298,7 @@ namespace L2PNewsTicker
             ToolbarItem tb = new ToolbarItem();
             tb.Text = Localization.Localize("Config");
             tb.Command = GetConfigPage;
-            tb.Icon = String.Format("{0}{1}.png", Device.OnPlatform("", "", "Assets/"), "settingsPadded");
+            tb.Icon = String.Format("{0}{1}.png", Device.OnPlatform("", "", "Assets/"), "settings");
             ToolbarItems.Add(tb);
 
             // Toggle Visibility for Authorization Status
@@ -451,7 +454,14 @@ namespace L2PNewsTicker
                 
             }
         }
-        
+
+        /*public static bool HasInternet()
+        {
+            var connectionProfile = NetworkInformation.GetInternetConnectionProfile();
+            return (connectionProfile != null &&
+                    connectionProfile.GetNetworkConnectivityLevel() == NetworkConnectivityLevel.InternetAccess);
+        }*/
+
         async void Button_Clicked (object sender, EventArgs e)
 		{
 
@@ -459,12 +469,14 @@ namespace L2PNewsTicker
             try
             {
 
-#if (__ANDROID__ || __IOS__)
+/*#if (__ANDROID__ || __IOS__)
                 // nothing
 #else
                 if (!Microsoft.Phone.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
                     throw new Exception();
-#endif
+                if (!HasInternet())
+                    throw new Exception();
+#endif*/
 
                 //label.Text = "Starting";
                 label.Text = Localization.Localize("Starting");
