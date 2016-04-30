@@ -1,0 +1,2 @@
+MainPackage=T:\drop\Dropbox\Visual Studio 2012\Projects\L2PNewsTicker\L2PNewsTickerWin\L2PNewsTickerWin.UWP\bin\x86\Release\L2PNewsTickerWin.UWP_1.2.4.0_x86.appx
+SymbolPackage=T:\drop\Dropbox\Visual Studio 2012\Projects\__StuffL2PNewsticker\uwp\L2PNewsTickerWin.UWP_1.2.4.0_Test\L2PNewsTickerWin.UWP_1.2.4.0_x86.appxsym

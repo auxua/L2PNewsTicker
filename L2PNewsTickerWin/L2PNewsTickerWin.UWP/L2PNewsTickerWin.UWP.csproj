@@ -19,6 +19,10 @@
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <PackageCertificateKeyFile>L2PNewsTickerWin.UWP_StoreKey.pfx</PackageCertificateKeyFile>
     <PackageCertificateThumbprint>9521EB5A67831C4245D5B808EC066B56F3D5DF2B</PackageCertificateThumbprint>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <AppxPackageDir>T:\drop\Dropbox\Visual Studio 2012\Projects\__StuffL2PNewsticker\uwp\</AppxPackageDir>
+    <AppxBundle>Always</AppxBundle>
+    <AppxBundlePlatforms>x86|arm</AppxBundlePlatforms>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
@@ -99,7 +103,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Locale_WinPhone.cs" />
+    <Compile Include="Locale_UWP.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -114,8 +118,9 @@
   <ItemGroup>
     <Content Include="Assets\settings.png" />
     <Content Include="Assets\settingsPadded.png" />
+    <Content Include="Assets\Square71x71Logo.png" />
     <Content Include="Assets\Square71x71Logo.scale-400.png" />
-    <Content Include="Assets\StoreLogo.scale-100.png" />
+    <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\StoreLogo.scale-400.png" />
     <None Include="Package.StoreAssociation.xml" />
     <Content Include="Properties\Default.rd.xml" />

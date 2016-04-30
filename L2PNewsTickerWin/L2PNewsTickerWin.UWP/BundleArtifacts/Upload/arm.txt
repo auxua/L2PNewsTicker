@@ -1,0 +1,3 @@
+MainPackage=T:\drop\Dropbox\Visual Studio 2012\Projects\L2PNewsTicker\L2PNewsTickerWin\L2PNewsTickerWin.UWP\bin\ARM\Release\Upload\L2PNewsTickerWin.UWP_1.2.4.0_ARM.appx
+ResourcePack=T:\drop\Dropbox\Visual Studio 2012\Projects\L2PNewsTicker\L2PNewsTickerWin\L2PNewsTickerWin.UWP\_language-de.appx
+ResourcePack=T:\drop\Dropbox\Visual Studio 2012\Projects\L2PNewsTicker\L2PNewsTickerWin\L2PNewsTickerWin.UWP\_scale-400.appx

@@ -409,7 +409,8 @@ namespace L2PNewsTicker
             try
             {
                 // Create Callback and start Work
-                await DataManager.startUpdate(new SimpleFinishedCallBack(this, list, bar));
+                //await DataManager.startUpdate(new SimpleFinishedCallBack(this, list, bar));
+                await DataManager.startUpdateNew(new SimpleFinishedCallBack(this, list, bar));
             }
             catch (AuthenticationManager.NotAuthorizedException)
             {

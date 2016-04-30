@@ -426,7 +426,7 @@ namespace L2PAPIClientPortable.DataModel
     public class L2PWhatsNewDataType : L2PBaseData
     {
         public List<L2PAnnouncementElement> announcements;
-        public List<L2PAssignmentElement> assignements;
+        public List<L2PAssignmentElement> assignments;
         public List<L2PDiscussionItemElement> discussionItems;
         public List<L2PEmailElement> emails;
         public List<L2PHyperlinkElement> hyperlinks;
@@ -444,7 +444,7 @@ namespace L2PAPIClientPortable.DataModel
 
     public class L2PWhatsAllNewDataType : L2PBaseData
     {
-        List<L2PWhatsNewExtendedDataType> dataset;
+        public List<L2PWhatsNewExtendedDataType> dataset;
     }
 
     public class L2PLearningObjectElement
@@ -520,7 +520,7 @@ namespace L2PAPIClientPortable.DataModel
     {
         public List<customKVPair> pairs;
         public customKVList() { pairs = new List<customKVPair>(); }
-        public Dictionary<string,string> ToDictionary()
+        public Dictionary<string, string> ToDictionary()
         {
             Dictionary<string, string> dict = new Dictionary<string, string>();
             foreach (var item in pairs)
@@ -589,7 +589,7 @@ namespace L2PAPIClientPortable.DataModel
         public bool Status;
     }
 
-    
+
 
     #endregion
 
