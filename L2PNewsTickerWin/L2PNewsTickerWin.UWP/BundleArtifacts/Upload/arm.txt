@@ -1,3 +1,5 @@
-MainPackage=T:\drop\Dropbox\Visual Studio 2012\Projects\L2PNewsTicker\L2PNewsTickerWin\L2PNewsTickerWin.UWP\bin\ARM\Release\Upload\L2PNewsTickerWin.UWP_1.2.4.0_ARM.appx
+MainPackage=T:\drop\Dropbox\Visual Studio 2012\Projects\L2PNewsTicker\L2PNewsTickerWin\L2PNewsTickerWin.UWP\bin\ARM\Release\Upload\L2PNewsTickerWin.UWP_1.2.6.0_ARM.appx
+SymbolPackage=T:\drop\Dropbox\Visual Studio 2012\Projects\__StuffL2PNewsticker\uwp\L2PNewsTickerWin.UWP_1.2.6.0\L2PNewsTickerWin.UWP_1.2.6.0_ARM.appxsym
 ResourcePack=T:\drop\Dropbox\Visual Studio 2012\Projects\L2PNewsTicker\L2PNewsTickerWin\L2PNewsTickerWin.UWP\_language-de.appx
+ResourcePack=T:\drop\Dropbox\Visual Studio 2012\Projects\L2PNewsTicker\L2PNewsTickerWin\L2PNewsTickerWin.UWP\_scale-100.appx
 ResourcePack=T:\drop\Dropbox\Visual Studio 2012\Projects\L2PNewsTicker\L2PNewsTickerWin\L2PNewsTickerWin.UWP\_scale-400.appx

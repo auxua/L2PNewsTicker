@@ -122,7 +122,7 @@ namespace L2PNewsTickerWin
         public static bool Load()
         {
             object o;
-            if (!Application.Current.Properties.TryGetValue("newStuff",out o))
+            if (!Application.Current.Properties.TryGetValue("newStuff", out o))
             {
                 // no data
                 return false;
@@ -154,7 +154,7 @@ namespace L2PNewsTickerWin
             public void ImportantLog(string text) { }
             public void Log(string text) { }
         }
-        
+
         /// <summary>
         /// Adds more Stuff to tmpStuff
         /// </summary>
@@ -168,7 +168,31 @@ namespace L2PNewsTickerWin
                 tmpStuff.Add(d);
             }
             ProgressCallback.onProgress();
-            
+
+        }
+
+        private static void addStuff(IEnumerable<L2PAPIClientPortable.DataModel.L2PWhatsNewExtendedDataType> list)
+        {
+            lock (myLock)
+            {
+                int i = 0;
+                foreach (var item in list)
+                {
+                    ExtendedWhatsNewData d = new ExtendedWhatsNewData(item);
+                    d.cid = item.cid;
+                    tmpStuff.Add(d);
+                }
+                /*for (i=0;i<list.Count();i++)
+                {
+                    var data = list.ElementAt(i);
+                    ExtendedWhatsNewData d = new ExtendedWhatsNewData(data);
+                    d.cid = cid;
+                    //newStuff.Add(d);
+                    tmpStuff.Add(d);
+                }*/
+                ProgressCallback.onProgress();
+            }
+
         }
 
         //[MethodImpl(MethodImplOptions.Synchronized)]
@@ -221,26 +245,26 @@ namespace L2PNewsTickerWin
                     since = (int)sinceObject;
                 }
                 var result = await L2PAPIClientPortable.api.Calls.L2PwhatsNewSinceAsync(cid, since);
-//#if DEBUG
+                //#if DEBUG
                 //Logger.Log("Got Data for: " + cid);
-                Logger.Log(cid+ " ✓");
-//#endif
+                Logger.Log(cid + " ✓");
+                //#endif
                 // If cancelled while getting data, return to avoid data inconsistencies
                 if (ct != null && ct.IsCancellationRequested)
                 {
 #if DEBUG
-                    Logger.Log("Data for " + cid+" aborted");
+                    Logger.Log("Data for " + cid + " aborted");
 #endif
                     return;
                 }
                 // Add to Data Management
                 if (result.status)
-                    addStuff(result,cid);
+                    addStuff(result, cid);
             }
 #if (__ANDROID__ || __IOS__)
             catch (System.Net.WebException ex)
 #else
-                    catch (System.Net.Http.HttpRequestException ex)
+            catch (System.Net.Http.HttpRequestException ex)
 #endif
             {
                 //Logger.Log(Localization.Localize("NoInternet"));
@@ -267,7 +291,7 @@ namespace L2PNewsTickerWin
             }
         }
 
-        private static async void getContentBySemester(CancellationToken ct, bool oldCourses=false)
+        private static async void getContentBySemester(CancellationToken ct, bool oldCourses = false)
         {
             // Simple idea: Cancelled? Report for data source size, then return
             if (ct != null && ct.IsCancellationRequested)
@@ -317,18 +341,24 @@ namespace L2PNewsTickerWin
                     return;
                 }
                 // Add to Data Management (one by one)
-                foreach (var item in result.dataset)
+                /*foreach (var item in result.dataset)
                 {
                     if (item.status)
                         addStuff(item, item.cid);
+                }*/
+
+                if (result.status)
+                {
+                    var filterList = result.dataset.FindAll((x) => x.status);
+                    addStuff(filterList);
                 }
 
-                
+
             }
 #if (__ANDROID__ || __IOS__)
             catch (System.Net.WebException ex)
 #else
-                    catch (System.Net.Http.HttpRequestException ex)
+            catch (System.Net.Http.HttpRequestException ex)
 #endif
             {
                 //Logger.Log(Localization.Localize("NoInternet"));
@@ -405,7 +435,7 @@ namespace L2PNewsTickerWin
                 //newStuff.Clear();
                 tmpStuff.Clear();
                 ProgressCallback = callback;
-//#if DEBUG
+                //#if DEBUG
                 Logger.Log(Localization.Localize("Starting"));
                 //#endif
                 List<string> cids = new List<string>();
@@ -450,9 +480,9 @@ namespace L2PNewsTickerWin
                     }
                 }
 
-//#if DEBUG
+                //#if DEBUG
                 Logger.Log(Localization.Localize("GotCourses"));
-//#endif
+                //#endif
 
                 ProgressCallback.beforeGettingCourses(cids.Count());
                 // Use Tasks for Multithreading
@@ -472,7 +502,7 @@ namespace L2PNewsTickerWin
                     threads[i] = Task.Factory.StartNew(() => getContentForCID(cid, token), token);
                     i++;
                 }
-                
+
             }
             /*catch (AggregateException ex)
             {
@@ -582,7 +612,7 @@ namespace L2PNewsTickerWin
                     // Save Token to enable cancallation later on
                     cancelTokens[1] = TokenSource;
                     token = TokenSource.Token;
-                    threads[1] = Task.Factory.StartNew(() => getContentBySemester(token,true));
+                    threads[1] = Task.Factory.StartNew(() => getContentBySemester(token, true));
                 }
 
             }
@@ -631,8 +661,8 @@ namespace L2PNewsTickerWin
 
         private static string GetStringFromRoomData(ExtendedWhatsNewData data)
         {
-            string result = "For CID " + data.cid + " ( "+CIDMappings[data.cid]+" ) :" + Environment.NewLine;
-            if (data.data.wikis != null && data.data.wikis.Count>0) result += "  Wikis: " + data.data.wikis.Count + Environment.NewLine;
+            string result = "For CID " + data.cid + " ( " + CIDMappings[data.cid] + " ) :" + Environment.NewLine;
+            if (data.data.wikis != null && data.data.wikis.Count > 0) result += "  Wikis: " + data.data.wikis.Count + Environment.NewLine;
             if (data.data.announcements != null && data.data.announcements.Count > 0) result += "  Announcements: " + data.data.announcements.Count + Environment.NewLine;
             if (data.data.assignments != null && data.data.assignments.Count > 0) result += "  Assignments: " + data.data.assignments.Count + Environment.NewLine;
             if (data.data.discussionItems != null && data.data.discussionItems.Count > 0) result += "  Discussions: " + data.data.discussionItems.Count + Environment.NewLine;
@@ -658,15 +688,15 @@ namespace L2PNewsTickerWin
                 // For detail traverse whole dataset
                 string result = "";
                 if (data.data.wikis != null && data.data.wikis.Count > 0) result += "  Wikis: " + data.data.wikis.Count + Environment.NewLine;
-                if (data.data.announcements != null && data.data.announcements.Count > 0) result += "  "+ Localization.Localize("Announcements")+": " + data.data.announcements.Count + Environment.NewLine;
-                if (data.data.assignments != null && data.data.assignments.Count > 0) result += "  "+ Localization.Localize("Assignments")+": " + data.data.assignments.Count + Environment.NewLine;
-                if (data.data.discussionItems != null && data.data.discussionItems.Count > 0) result += "  "+ Localization.Localize("Discussions")+": " + data.data.discussionItems.Count + Environment.NewLine;
+                if (data.data.announcements != null && data.data.announcements.Count > 0) result += "  " + Localization.Localize("Announcements") + ": " + data.data.announcements.Count + Environment.NewLine;
+                if (data.data.assignments != null && data.data.assignments.Count > 0) result += "  " + Localization.Localize("Assignments") + ": " + data.data.assignments.Count + Environment.NewLine;
+                if (data.data.discussionItems != null && data.data.discussionItems.Count > 0) result += "  " + Localization.Localize("Discussions") + ": " + data.data.discussionItems.Count + Environment.NewLine;
                 if (data.data.emails != null && data.data.emails.Count > 0) result += "  Emails: " + data.data.emails.Count + Environment.NewLine;
                 if (data.data.hyperlinks != null && data.data.hyperlinks.Count > 0) result += "  Hyperlinks: " + data.data.hyperlinks.Count + Environment.NewLine;
-                if (data.data.learningMaterials != null && data.data.learningMaterials.Count > 0) result += "  "+ Localization.Localize("LearningMaterials")+": " + data.data.learningMaterials.Count + Environment.NewLine;
-                if (data.data.literature != null && data.data.literature.Count > 0) result += "  "+ Localization.Localize("Literature")+": " + data.data.literature.Count + Environment.NewLine;
-                if (data.data.mediaLibraries != null && data.data.mediaLibraries.Count > 0) result += "  "+ Localization.Localize("MediaLibraries")+": " + data.data.mediaLibraries.Count + Environment.NewLine;
-                if (data.data.sharedDocuments != null && data.data.sharedDocuments.Count > 0) result += "  "+ Localization.Localize("SharedDocuments")+": " + data.data.sharedDocuments.Count + Environment.NewLine;
+                if (data.data.learningMaterials != null && data.data.learningMaterials.Count > 0) result += "  " + Localization.Localize("LearningMaterials") + ": " + data.data.learningMaterials.Count + Environment.NewLine;
+                if (data.data.literature != null && data.data.literature.Count > 0) result += "  " + Localization.Localize("Literature") + ": " + data.data.literature.Count + Environment.NewLine;
+                if (data.data.mediaLibraries != null && data.data.mediaLibraries.Count > 0) result += "  " + Localization.Localize("MediaLibraries") + ": " + data.data.mediaLibraries.Count + Environment.NewLine;
+                if (data.data.sharedDocuments != null && data.data.sharedDocuments.Count > 0) result += "  " + Localization.Localize("SharedDocuments") + ": " + data.data.sharedDocuments.Count + Environment.NewLine;
                 // If empty, just inform user
                 if (result == "")
                     result = Localization.Localize("NothingNew");
@@ -752,7 +782,7 @@ namespace L2PNewsTickerWin
             return "ws" + year;
 
         }
-        
+
         /// <summary>
         /// Property indicating whether the user wants to query also the old courses
         /// </summary>

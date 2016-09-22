@@ -171,6 +171,30 @@ namespace L2PNewsTicker
             
         }
 
+        private static void addStuff(IEnumerable<L2PAPIClientPortable.DataModel.L2PWhatsNewExtendedDataType> list)
+        {
+            lock(myLock)
+            {
+                int i = 0;
+                foreach (var item in list)
+                {
+                    ExtendedWhatsNewData d = new ExtendedWhatsNewData(item);
+                    d.cid = item.cid;
+                    tmpStuff.Add(d);
+                }
+                /*for (i=0;i<list.Count();i++)
+                {
+                    var data = list.ElementAt(i);
+                    ExtendedWhatsNewData d = new ExtendedWhatsNewData(data);
+                    d.cid = cid;
+                    //newStuff.Add(d);
+                    tmpStuff.Add(d);
+                }*/
+                ProgressCallback.onProgress();
+            }
+
+        }
+
         //[MethodImpl(MethodImplOptions.Synchronized)]
         private static bool isFull()
         {
@@ -317,10 +341,16 @@ namespace L2PNewsTicker
                     return;
                 }
                 // Add to Data Management (one by one)
-                foreach (var item in result.dataset)
+                /*foreach (var item in result.dataset)
                 {
                     if (item.status)
                         addStuff(item, item.cid);
+                }*/
+
+                if (result.status)
+                {
+                    var filterList = result.dataset.FindAll((x) => x.status);
+                    addStuff(filterList);
                 }
 
                 

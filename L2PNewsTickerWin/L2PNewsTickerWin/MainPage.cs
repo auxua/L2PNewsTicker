@@ -14,9 +14,9 @@ using System.Windows.Input;
 
 namespace L2PNewsTickerWin
 {
-    
+
     public class MainPage : ContentPage
-	{
+    {
         public class TestPageLoggingAdapter : ILoggingAdapter
         {
             private Label label;
@@ -39,7 +39,7 @@ namespace L2PNewsTickerWin
         }
 
         private Label label;
-		private Button AuthorizeButton;
+        private Button AuthorizeButton;
         private Button RefreshButton;
         private Button StartUpdateButton;
         private ListView list;
@@ -138,10 +138,16 @@ namespace L2PNewsTickerWin
                     if (!value)
                     {
                         RefreshButton.Text = Localization.Localize("Refresh");
+#if !WINDOWS_PHONE
+                        list.IsRefreshing = false;
+#endif
                     }
                     else
                     {
                         RefreshButton.Text = Localization.Localize("Cancel");
+#if !WINDOWS_PHONE
+                        list.IsRefreshing = true;
+#endif
                     }
                 });
                 //if (!value) return;
@@ -188,8 +194,8 @@ namespace L2PNewsTickerWin
             }
         }
 
-        public MainPage ()
-		{
+        public MainPage()
+        {
             Title = "L2P Newsticker";
 
             // Is User already authorized?
@@ -203,11 +209,11 @@ namespace L2PNewsTickerWin
             label.TextColor = FontColor;
             label.HorizontalOptions = LayoutOptions.Center;
 
-			AuthorizeButton = new Button();
-			AuthorizeButton.Text = Localization.Localize("Authorize");
-			AuthorizeButton.Clicked += Button_Clicked;
-			if (Device.OS != TargetPlatform.iOS)
-            	AuthorizeButton.TextColor = FontColor;
+            AuthorizeButton = new Button();
+            AuthorizeButton.Text = Localization.Localize("Authorize");
+            AuthorizeButton.Clicked += Button_Clicked;
+            if (Device.OS != TargetPlatform.iOS)
+                AuthorizeButton.TextColor = FontColor;
             AuthorizeButton.HorizontalOptions = LayoutOptions.FillAndExpand;
 
             /*StartUpdateButton = new Button();
@@ -216,16 +222,15 @@ namespace L2PNewsTickerWin
 
             RefreshButton = new Button();
             RefreshButton.Text = Localization.Localize("Refresh");
-			if (Device.OS != TargetPlatform.iOS)
-            	RefreshButton.TextColor = FontColor;
+            if (Device.OS != TargetPlatform.iOS)
+                RefreshButton.TextColor = FontColor;
             RefreshButton.Clicked += GetCourseUpdates;
             RefreshButton.IsEnabled = false;
             RefreshButton.HorizontalOptions = LayoutOptions.FillAndExpand;
 
             var line = new BoxView();
             line.HeightRequest = 5;
-            //line.Color = FontColor;
-            line.Color = Color.FromRgb(0, 84, 159);
+            line.Color = FontColor;
             //line.HorizontalOptions = LayoutOptions.CenterAndExpand;
             //line.TranslationX = -10;
             line.WidthRequest = 1080; // just use full width of screen...
@@ -243,11 +248,20 @@ namespace L2PNewsTickerWin
             };
 
             list = new ListView();
+#if !WINDOWS_PHONE
+            list.IsPullToRefreshEnabled = true;
+            list.RefreshCommand = new Command(() =>
+            {
+                //list.IsRefreshing = true;
+                this.GetCourseUpdates(null, null);
+                //list.IsRefreshing = false;
+            });
+#endif
             list.ItemTapped += TappedCourse;
             list.HasUnevenRows = true;
-			if (Device.OS == TargetPlatform.iOS)
-				list.BackgroundColor = MainPage.Background;
-				
+            if (Device.OS == TargetPlatform.iOS)
+                list.BackgroundColor = MainPage.Background;
+
             /*var customCell = new DataTemplate(typeof(TextCell));
             customCell.SetBinding(TextCell.TextProperty, "Text");
             customCell.SetBinding(TextCell.DetailProperty, "Detail");
@@ -258,7 +272,6 @@ namespace L2PNewsTickerWin
 
             bar = new ProgressBar();
             bar.BackgroundColor = FontColor;
-            bar.HorizontalOptions = LayoutOptions.Fill;
 
             TestPageLoggingAdapter Logger = new TestPageLoggingAdapter(label);
             DataManager.setLogger(Logger);
@@ -298,7 +311,7 @@ namespace L2PNewsTickerWin
             ToolbarItem tb = new ToolbarItem();
             tb.Text = Localization.Localize("Config");
             tb.Command = GetConfigPage;
-            tb.Icon = String.Format("{0}{1}.png", Device.OnPlatform("", "", "Assets/"), "settings");
+            tb.Icon = String.Format("{0}{1}.png", Device.OnPlatform("", "", "Assets/"), "settingsPadded");
             ToolbarItems.Add(tb);
 
             // Toggle Visibility for Authorization Status
@@ -306,7 +319,7 @@ namespace L2PNewsTickerWin
             //isAuthorized = auth;
         }
 
-        
+
 
         private void TappedCourse(object sender, ItemTappedEventArgs e)
         {
@@ -321,10 +334,10 @@ namespace L2PNewsTickerWin
             CourseDetailPage page = new CourseDetailPage(data);
 
             IsBusy = false;
-            if (data.Count>0)
+            if (data.Count > 0)
                 Device.BeginInvokeOnMainThread(() => Navigation.PushAsync(page));
             else
-                Device.BeginInvokeOnMainThread(() => DisplayAlert("No Data", Localization.Localize("NoData"),"OK"));
+                Device.BeginInvokeOnMainThread(() => DisplayAlert("No Data", Localization.Localize("NoData"), "OK"));
 
         }
 
@@ -367,11 +380,11 @@ namespace L2PNewsTickerWin
             public void beforeGettingCourses(int cids)
             {
                 // set maxValue to cid+1 to allow progress indication for getting courses
-                maxValue = cids+1;
+                maxValue = cids + 1;
                 stepSize = 1.0 / maxValue;
                 Device.BeginInvokeOnMainThread(() =>
                 {
-                    bar.ProgressTo((++step)*stepSize,250,Easing.Linear);
+                    bar.ProgressTo((++step) * stepSize, 250, Easing.Linear);
                     // prevent user from tapping List to avoid inconsistent Data queries
                     list.IsEnabled = false;
                 });
@@ -381,7 +394,7 @@ namespace L2PNewsTickerWin
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
-                    bar.ProgressTo((++step)*stepSize, 250, Easing.Linear);
+                    bar.ProgressTo((++step) * stepSize, 250, Easing.Linear);
                 });
             }
         }
@@ -393,16 +406,16 @@ namespace L2PNewsTickerWin
                 // Already working, so abort is requested by user
                 DataManager.CancelUpdate();
                 Device.BeginInvokeOnMainThread(() =>
-                    {
-                        DisplayAlert("Cancel", Localization.Localize("CancelInfo"), "OK");
-                        // Just avoid the bar to hang somewhere in between
-                        bar.ProgressTo(0, 250, Easing.Linear);
-                        IsBusy = false;
-                        IsGettingData = false;
-                        // enable this list in case, there is data to show and tap
-                        list.IsEnabled = DataManager.hasData();
-                    });
-                
+                {
+                    DisplayAlert("Cancel", Localization.Localize("CancelInfo"), "OK");
+                    // Just avoid the bar to hang somewhere in between
+                    bar.ProgressTo(0, 250, Easing.Linear);
+                    IsBusy = false;
+                    IsGettingData = false;
+                    // enable this list in case, there is data to show and tap
+                    list.IsEnabled = DataManager.hasData();
+                });
+
                 return;
             }
 
@@ -412,6 +425,7 @@ namespace L2PNewsTickerWin
             try
             {
                 // Create Callback and start Work
+                //await DataManager.startUpdate(new SimpleFinishedCallBack(this, list, bar));
                 await DataManager.startUpdateNew(new SimpleFinishedCallBack(this, list, bar));
             }
             catch (AuthenticationManager.NotAuthorizedException)
@@ -451,37 +465,21 @@ namespace L2PNewsTickerWin
                     IsGettingData = false;
                     bar.ProgressTo(0, 250, Easing.BounceOut);
                 });
-                
+
             }
         }
 
-        /*public static bool HasInternet()
+        async void Button_Clicked(object sender, EventArgs e)
         {
-            var connectionProfile = NetworkInformation.GetInternetConnectionProfile();
-            return (connectionProfile != null &&
-                    connectionProfile.GetNetworkConnectivityLevel() == NetworkConnectivityLevel.InternetAccess);
-        }*/
-
-        async void Button_Clicked (object sender, EventArgs e)
-		{
 
 
             try
             {
 
-/*#if (__ANDROID__ || __IOS__)
-                // nothing
-#else
-                if (!Microsoft.Phone.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
-                    throw new Exception();
-                if (!HasInternet())
-                    throw new Exception();
-#endif*/
-
                 //label.Text = "Starting";
                 label.Text = Localization.Localize("Starting");
 
-				Device.BeginInvokeOnMainThread(() => AuthorizeButton.IsEnabled = false);
+                Device.BeginInvokeOnMainThread(() => AuthorizeButton.IsEnabled = false);
 
                 string url;
                 try
@@ -503,9 +501,9 @@ namespace L2PNewsTickerWin
                     Device.OpenUri(new Uri(url));
                 });
 
-                
 
-				bool auth = false;
+
+                bool auth = false;
 
                 // just try to check authorize sometimes in case of slow device
                 for (int i = 0; i < 12; i++)
@@ -519,31 +517,31 @@ namespace L2PNewsTickerWin
                         break;
                     }
                 }
-				if (!auth)
-				{
-					// Did not succeed
-					throw new Exception();
-				}
+                if (!auth)
+                {
+                    // Did not succeed
+                    throw new Exception();
+                }
             }
             catch (System.Net.WebException ex)
             {
                 label.Text = Localization.Localize("NoInternet");
             }
-			catch (Exception ex)
-			{
-				// Did not succeed
-				Device.BeginInvokeOnMainThread(() => {
-					AuthorizeButton.IsEnabled = false;
-					label.Text = "Timeout "+Localization.Localize("Ready");
-				});
-			}
+            catch (Exception ex)
+            {
+                // Did not succeed
+                Device.BeginInvokeOnMainThread(() => {
+                    AuthorizeButton.IsEnabled = false;
+                    label.Text = "Timeout " + Localization.Localize("Ready");
+                });
+            }
             finally
             {
                 // Check Status
                 IsAuthorized = (L2PAPIClientPortable.AuthenticationManager.getState() == AuthenticationManager.AuthenticationState.ACTIVE);
                 if (IsAuthorized) NeedsUpdate = true;
             }
-            
+
         }
-	}
+    }
 }

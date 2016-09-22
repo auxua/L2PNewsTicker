@@ -137,10 +137,16 @@ namespace L2PNewsTicker
                     if (!value)
                     {
                         RefreshButton.Text = Localization.Localize("Refresh");
+#if !WINDOWS_PHONE
+                        list.IsRefreshing = false;
+#endif
                     }
                     else
                     {
                         RefreshButton.Text = Localization.Localize("Cancel");
+#if !WINDOWS_PHONE
+                        list.IsRefreshing = true;
+#endif
                     }
                 });
                 //if (!value) return;
@@ -241,6 +247,15 @@ namespace L2PNewsTicker
             };
 
             list = new ListView();
+#if !WINDOWS_PHONE
+            list.IsPullToRefreshEnabled = true;
+            list.RefreshCommand = new Command(() =>
+            {
+                //list.IsRefreshing = true;
+                this.GetCourseUpdates(null,null);
+                //list.IsRefreshing = false;
+            });
+#endif
             list.ItemTapped += TappedCourse;
             list.HasUnevenRows = true;
 			if (Device.OS == TargetPlatform.iOS)

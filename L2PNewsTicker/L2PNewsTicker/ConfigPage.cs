@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 using Xamarin.Forms;
 
@@ -234,6 +235,8 @@ namespace L2PNewsTicker
 
         private void SaveButton_Clicked(object sender, EventArgs e)
         {
+
+
             int time = minutes + (60 * hours) + (24 * 60 * days);
             // Prevent user from very small timespans
             if (time < 15)
